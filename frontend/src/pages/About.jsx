@@ -56,7 +56,7 @@ export default function About() {
       <section className="about-hero">
         <div className="about-hero-overlay">
           <div className="about-hero-content">
-            <h1>About the Institute</h1>
+            <h1>About Us</h1>
             <p>
               Delivering structured capacity-building programs across technical,
               operational, safety, and leadership domains for institutional
