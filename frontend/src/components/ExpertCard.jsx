@@ -1,11 +1,18 @@
 import React from 'react'
 
-export default function ExpertCard({ expert, onRegister }){
+export default function ExpertCard({ expert, onRegister, onPhotoClick }){
   const photo = expert.profilePhotoUrl || expert.photo || '/experts/default.jpg'
   return (
     <div className="card expert-card">
       <div className="expert-card-inner">
-        <img className="expert-photo" src={photo} alt={expert.name} />
+        <button
+          type="button"
+          className="expert-photo-button"
+          onClick={() => onPhotoClick?.(photo, expert.name)}
+          aria-label={`Open photo of ${expert.name}`}
+        >
+          <img className="expert-photo" src={photo} alt={expert.name} />
+        </button>
         <div className="card-body">
           <h4>{expert.name}</h4>
           {expert.title && <div className="expert-role">{expert.title}</div>}

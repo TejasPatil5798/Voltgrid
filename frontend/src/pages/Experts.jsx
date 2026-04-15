@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ExpertCard from '../components/ExpertCard'
 import RegisterModal from '../components/RegisterModal'
+import ImageLightbox from '../components/ImageLightbox'
 
 const domainBlocks = [
   {
@@ -66,6 +67,7 @@ export default function Experts(){
   const [experts, setExperts] = useState([])
   const [selectedExpert, setSelectedExpert] = useState(null)
   const [showRegister, setShowRegister] = useState(false)
+  const [previewImage, setPreviewImage] = useState(null)
   useEffect(()=>{
     async function load(){
       try{
@@ -83,6 +85,10 @@ export default function Experts(){
   function openRegister(expert = null){
     setSelectedExpert(expert)
     setShowRegister(true)
+  }
+
+  function openPreview(src, alt){
+    setPreviewImage({ src, alt })
   }
 
   return (
@@ -114,7 +120,7 @@ export default function Experts(){
       <div className="grid-list experts-grid">
         {experts.map(ex => (
           <div key={ex.id}>
-            <ExpertCard expert={ex} onRegister={openRegister} />
+            <ExpertCard expert={ex} onRegister={openRegister} onPhotoClick={openPreview} />
           </div>
         ))}
       </div>
@@ -155,6 +161,13 @@ export default function Experts(){
       </section>
 
       {showRegister && <RegisterModal expert={selectedExpert} onClose={() => setShowRegister(false)} />}
+      {previewImage && (
+        <ImageLightbox
+          src={previewImage.src}
+          alt={previewImage.alt}
+          onClose={() => setPreviewImage(null)}
+        />
+      )}
     </main>
   )
 }
