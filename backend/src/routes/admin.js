@@ -47,6 +47,36 @@ const dataDir = path.join(__dirname, '..', '..', 'data')
         console.error('admin regs error', err)
         res.status(500).json({ error: 'Failed to load registrations' })
     }
+ })
+
+// Toggle active/inactive on a registration (admin only)
+router.post('/registrations/:id/active', requireAdmin, async (req, res) => {
+    try {
+        const id = req.params.id
+        const active = !!req.body?.active
+
+        if (mongoose.connection.readyState === 1) {
+            const reg = await ExpertRegistration.findById(id)
+            if (!reg) return res.status(404).json({ error: 'Not found' })
+            reg.active = active
+            await reg.save()
+            return res.json({ success: true, updated: true, active })
+        }
+
+        const regsFile = path.join(dataDir, 'expert_regs.json')
+        let list = []
+        if (fs.existsSync(regsFile)) {
+            try { list = JSON.parse(fs.readFileSync(regsFile, 'utf8') || '[]') } catch (e) { list = [] }
+        }
+        const idx = list.findIndex(x => x._id === id || x.id === id)
+        if (idx === -1) return res.status(404).json({ error: 'Not found' })
+        list[idx].active = active
+        fs.writeFileSync(regsFile, JSON.stringify(list, null, 2))
+        return res.json({ success: true, updated: true, active })
+    } catch (err) {
+        console.error('active toggle error', err)
+        res.status(500).json({ error: 'Failed to update active status' })
+    }
 })
 
  // Approve a registration (admin only)

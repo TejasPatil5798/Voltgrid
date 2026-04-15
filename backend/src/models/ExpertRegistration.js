@@ -18,6 +18,7 @@ const expertRegistrationSchema = new mongoose.Schema({
   consentAccurate: { type: Boolean, default: false },
   consentReviewed: { type: Boolean, default: false },
   message: { type: String, required: false },
+  active: { type: Boolean, default: true },
   approved: { type: Boolean, default: false },
   approvedAt: { type: Date },
   approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },

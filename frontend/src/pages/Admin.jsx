@@ -98,6 +98,7 @@ export default function Admin(){
   const token = localStorage.getItem('vg_token')
   const [refresh, setRefresh] = useState(0)
   const [previewImage, setPreviewImage] = useState(null)
+  const [search, setSearch] = useState('')
   const contacts = useFetch('/api/admin/contacts', token, refresh)
   const regs = useFetch('/api/admin/registrations', token, refresh)
 
@@ -113,6 +114,42 @@ export default function Admin(){
     }catch(e){ alert('Approve failed: '+e.message) }
   }
 
+  async function setActive(id, active){
+    if(!token) return alert('Not authenticated')
+    try{
+      const res = await fetch(apiUrl('/api/admin/registrations/' + id + '/active'), {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ active })
+      })
+      const data = await res.json().catch(() => null)
+      if(!res.ok || !data?.success) {
+        return alert('Status update failed: ' + (data?.error || res.statusText))
+      }
+      setRefresh(r => r + 1)
+    }catch(e){
+      alert('Status update failed: ' + e.message)
+    }
+  }
+
+  const filteredRegs = Array.isArray(regs.data)
+    ? regs.data.filter((r) => {
+        const haystack = [
+          r.name,
+          r.title,
+          r.email,
+          r.organization,
+          r.keySpecialisation,
+          Array.isArray(r.domains) ? r.domains.join(' ') : r.domains,
+          r.contactNumber,
+        ].filter(Boolean).join(' ').toLowerCase()
+        return haystack.includes(search.trim().toLowerCase())
+      })
+    : []
+
   if(!token) return <main className="page-main container">Please login to view admin data.</main>
 
   return (
@@ -122,12 +159,21 @@ export default function Admin(){
 
       <section style={{marginTop:30}}>
         <h3>Expert Registrations</h3>
+        <input
+          className="form-input"
+          style={{maxWidth:420, marginTop:12}}
+          type="text"
+          placeholder="Search by name, email, domain, organization..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         {regs.loading && <div>Loading...</div>}
         {regs.error && <div style={{color:'red'}}>{regs.error}</div>}
         {regs.data && regs.data.length===0 && <div>No registrations yet.</div>}
-        {regs.data && (
+        {regs.data && filteredRegs.length===0 && <div style={{marginTop:12}}>No matching registrations found.</div>}
+        {regs.data && filteredRegs.length > 0 && (
           <div className="admin-experts-grid" style={adminGridStyle}>
-            {regs.data.map((r, idx) => (
+            {filteredRegs.map((r, idx) => (
               <div key={r._id || r.id || idx} className="expert-card admin-card" style={adminCardStyle}>
                 <div className="expert-card-left" style={adminThumbWrapStyle}>
                   <button
@@ -146,7 +192,16 @@ export default function Admin(){
                       <div className="muted">{r.title || ''} {r.yearsExperience ? `· ${r.yearsExperience} yrs` : ''}</div>
                     </div>
                     <div className="admin-card-action">
-                      {r.approved ? <span style={{color:'green'}}>Approved</span> : <button onClick={()=>approve(r._id || r.id)} className="btn">Approve</button>}
+                      <div style={{display:'flex', gap:8, flexWrap:'wrap', justifyContent:'flex-end'}}>
+                        {r.approved ? <span style={{color:'green'}}>Approved</span> : <button onClick={()=>approve(r._id || r.id)} className="btn">Approve</button>}
+                        <button
+                          type="button"
+                          onClick={() => setActive(r._id || r.id, r.active === false)}
+                          className={`btn ${r.active === false ? 'btn-primary' : ''}`}
+                        >
+                          {r.active === false ? 'Set Active' : 'Set Inactive'}
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -173,7 +228,8 @@ export default function Admin(){
                     {r.linkedin ? <a href={r.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> : null}
                   </div>
                   <div className="muted small admin-card-meta" style={{marginTop:10}}>
-                    {r.approvedAt ? <span>Approved: {formatDate(r.approvedAt)}</span> : null}
+                    <span>Status: {r.active === false ? 'Inactive' : 'Active'}</span>
+                    {r.approvedAt ? <span> Â· Approved: {formatDate(r.approvedAt)}</span> : null}
                   </div>
                   <div className="small" style={{marginTop:8}}>Submitted: {formatDate(r.createdAt)}</div>
                 </div>

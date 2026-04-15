@@ -22,12 +22,12 @@ router.get('/', async (req, res) => {
   try {
     let approved = []
     if (mongoose.connection.readyState === 1) {
-      approved = await ExpertRegistration.find({ approved: true }).sort({ approvedAt: -1 }).lean()
+      approved = await ExpertRegistration.find({ approved: true, active: { $ne: false } }).sort({ approvedAt: -1 }).lean()
     } else {
       const dataDir = path.join(__dirname, '..', '..', 'data')
       const file = path.join(dataDir, 'expert_regs.json')
       if (fs.existsSync(file)) {
-        try { const list = JSON.parse(fs.readFileSync(file, 'utf8') || '[]'); approved = list.filter(x => x.approved) } catch (e) { approved = [] }
+        try { const list = JSON.parse(fs.readFileSync(file, 'utf8') || '[]'); approved = list.filter(x => x.approved && x.active !== false) } catch (e) { approved = [] }
       }
     }
 
@@ -81,6 +81,8 @@ router.post('/register', async (req, res) => {
       message: body.message
     }
 
+    if (typeof body.active === 'boolean') payload.active = body.active
+
     // If Cloudinary configured and client submitted a data URL for the photo, upload it
     if (process.env.CLOUDINARY_URL && payload.profilePhotoUrl && typeof payload.profilePhotoUrl === 'string' && payload.profilePhotoUrl.startsWith('data:')) {
       try {
@@ -106,7 +108,7 @@ router.post('/register', async (req, res) => {
     if (fs.existsSync(file)) {
       try { list = JSON.parse(fs.readFileSync(file, 'utf8') || '[]') } catch (e) { list = [] }
     }
-    const record = Object.assign({}, payload, { createdAt: new Date().toISOString() })
+    const record = Object.assign({}, payload, { active: payload.active !== false, createdAt: new Date().toISOString() })
     list.push(record)
     fs.writeFileSync(file, JSON.stringify(list, null, 2))
     console.log('Saved expert registration to file:', file)
