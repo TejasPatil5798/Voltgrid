@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { apiUrl } from '../lib/api'
 
 export default function RegisterModal({ expert, onClose }) {
   const [form, setForm] = useState({
@@ -28,7 +29,7 @@ export default function RegisterModal({ expert, onClose }) {
     try {
       const payload = { ...form }
       if (expert && expert.id) payload.expertId = expert.id
-      const res = await fetch('/api/experts/register', {
+      const res = await fetch(apiUrl('/api/experts/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

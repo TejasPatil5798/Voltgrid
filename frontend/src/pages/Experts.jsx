@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ExpertCard from '../components/ExpertCard'
 import RegisterModal from '../components/RegisterModal'
 import ImageLightbox from '../components/ImageLightbox'
+import { apiUrl } from '../lib/api'
 
 const domainBlocks = [
   {
@@ -71,7 +72,7 @@ export default function Experts(){
   useEffect(()=>{
     async function load(){
       try{
-        const res = await fetch('/api/experts')
+        const res = await fetch(apiUrl('/api/experts'))
         if(!res.ok) throw new Error('Failed to load experts')
         const data = await res.json()
         setExperts(data)

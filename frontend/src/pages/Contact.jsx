@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { apiUrl } from '../lib/api'
 
 const contactCards = [
   {
@@ -35,7 +36,7 @@ export default function Contact() {
     e.preventDefault();
     setStatus("sending");
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch(apiUrl("/api/contact"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

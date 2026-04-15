@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ImageLightbox from '../components/ImageLightbox'
+import { apiUrl } from '../lib/api'
 
 const adminGridStyle = {
   display: 'grid',
@@ -61,7 +62,7 @@ function useFetch(url, token, refreshKey){
       if(!token) return
       setLoading(true); setError(null)
       try{
-        const res = await fetch(url, { headers: { Authorization: 'Bearer ' + token } })
+      const res = await fetch(apiUrl(url), { headers: { Authorization: 'Bearer ' + token } })
         const text = await res.text()
         let d = null
         try{ d = text ? JSON.parse(text) : null }catch(e){ d = null }
@@ -103,7 +104,7 @@ export default function Admin(){
   async function approve(id){
     if(!token) return alert('Not authenticated')
     try{
-      const res = await fetch('/api/admin/registrations/'+id+'/approve',{ method: 'POST', headers: { Authorization: 'Bearer '+token } })
+      const res = await fetch(apiUrl('/api/admin/registrations/'+id+'/approve'),{ method: 'POST', headers: { Authorization: 'Bearer '+token } })
       let ok = res.ok
       let msg = ''
       try{ const t = await res.text(); if(t) { const d = JSON.parse(t); if(d && d.success) ok = true; if(d && d.error) msg = d.error } }catch(e){ /* ignore parse */ }
