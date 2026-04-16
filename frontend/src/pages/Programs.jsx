@@ -38,28 +38,21 @@ const residentialPoints = [
 export default function Programs() {
   return (
     <main>
-      <section className="programs-hero hero">
-        <div className="hero-content container">
+      <section className="about-hero">
+        <div className="about-hero-overlay">
+          <div className="about-hero-content">
           <h1>Training Programs</h1>
-          <p className="lead">
+          <p>
             Structured learning programs across technical, operational, safety,
             maintenance, project, and leadership domains for measurable
             capability development.
           </p>
-          <div className="hero-actions">
-            <a href="/contact" className="btn btn-primary">
-              Enquire Now
-            </a>
-            <a href="#training-programs" className="btn">
-              Explore Programs
-            </a>
           </div>
         </div>
       </section>
 
       <section id="training-programs" className="programs-page">
         <div className="section-header programs-header">
-          <span className="section-tag">Training Programs</span>
           <h2>TRAINING PROGRAMS</h2>
           <p>
             Programs are delivered through a modular and structured framework
@@ -76,7 +69,6 @@ export default function Programs() {
             />
           </div>
           <div className="programs-feature-copy">
-            <span className="section-tag">Program Structure</span>
             <h2>Program Structure</h2>
             <p>
               Programs are offered as modular training units, typically
@@ -87,7 +79,6 @@ export default function Programs() {
 
         <section className="programs-surface">
           <div className="section-header programs-subheader">
-            <span className="section-tag">Program Categories</span>
             <h2>Program Categories</h2>
           </div>
           <div className="program-categories-grid">
@@ -101,7 +92,6 @@ export default function Programs() {
 
         <section className="programs-feature-card programs-feature-card-reverse">
           <div className="programs-feature-copy">
-            <span className="section-tag">Customized Programs</span>
             <h2>Customized Programs</h2>
             <p>Programs can be customized based on:</p>
             <ul className="programs-list">
@@ -120,13 +110,11 @@ export default function Programs() {
 
         <section className="programs-methodology-section">
           <div className="section-header programs-header">
-            <span className="section-tag">Training Methodology</span>
             <h2>TRAINING METHODOLOGY</h2>
           </div>
 
           <div className="programs-methodology-grid">
             <article className="programs-method-card">
-              <span className="section-tag">Approach</span>
               <h3>Approach</h3>
               <ul className="programs-list">
                 {approachPoints.map((point) => (
@@ -136,7 +124,6 @@ export default function Programs() {
             </article>
 
             <article className="programs-method-card">
-              <span className="section-tag">Methods Used</span>
               <h3>Methods Used</h3>
               <ul className="programs-list">
                 {methodsUsed.map((point) => (
@@ -148,9 +135,6 @@ export default function Programs() {
 
           <div className="programs-residential-panel">
             <div className="programs-residential-copy">
-              <span className="section-tag programs-section-tag-light">
-                Residential Learning Model
-              </span>
               <h3>Residential Learning Model</h3>
               <p>
                 Residential programs follow an immersive learning approach,

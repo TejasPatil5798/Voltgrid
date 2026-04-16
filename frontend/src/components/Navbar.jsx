@@ -19,7 +19,7 @@ export default function Navbar(){
     <header>
       <div>
         <div className="logo">Voltgrid Insights</div>
-        <div className=''></div>
+        <div className=''>Power. Precision. Performance.</div>
       </div>
       
       <nav id="navMenu">

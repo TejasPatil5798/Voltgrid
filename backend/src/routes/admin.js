@@ -8,6 +8,30 @@ const { requireAdmin } = require('../middleware/auth')
 
 const router = express.Router()
 const dataDir = path.join(__dirname, '..', '..', 'data')
+const regsFile = path.join(dataDir, 'expert_regs.json')
+
+function loadFileRegistrations() {
+    let list = []
+    if (fs.existsSync(regsFile)) {
+        try { list = JSON.parse(fs.readFileSync(regsFile, 'utf8') || '[]') } catch (e) { list = [] }
+    }
+    return list
+}
+
+function saveFileRegistrations(list) {
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
+    fs.writeFileSync(regsFile, JSON.stringify(list, null, 2))
+}
+
+function getFileRegistrationIndex(list, id) {
+    if (!id) return -1
+    const syntheticMatch = /^file-(\d+)$/.exec(String(id))
+    if (syntheticMatch) {
+        const index = Number(syntheticMatch[1])
+        return Number.isInteger(index) && index >= 0 && index < list.length ? index : -1
+    }
+    return list.findIndex(x => x._id === id || x.id === id)
+}
 
 // List contacts (protected)
  // List contacts (admin only)
@@ -31,18 +55,18 @@ const dataDir = path.join(__dirname, '..', '..', 'data')
 
 // List expert registrations (protected)
  // List expert registrations (admin only)
- router.get('/registrations', requireAdmin, async (req, res) => {
+router.get('/registrations', requireAdmin, async (req, res) => {
     try {
         if (mongoose.connection.readyState === 1) {
-            const list = await ExpertRegistration.find().sort({ createdAt: -1 }).lean()
+            const list = await ExpertRegistration.find({ adminHidden: { $ne: true } }).sort({ createdAt: -1 }).lean()
             return res.json({ success: true, source: 'mongodb', data: list })
         }
-        const regsFile = path.join(dataDir, 'expert_regs.json')
-        let list = []
-        if (fs.existsSync(regsFile)) {
-            try { list = JSON.parse(fs.readFileSync(regsFile, 'utf8') || '[]') } catch (e) { list = [] }
-        }
-        return res.json({ success: true, source: 'file', data: list.reverse() })
+        const list = loadFileRegistrations().filter((item) => item.adminHidden !== true)
+        const normalized = list.map((item, index) => ({
+            ...item,
+            id: item.id || item._id || `file-${index}`,
+        }))
+        return res.json({ success: true, source: 'file', data: normalized.reverse() })
     } catch (err) {
         console.error('admin regs error', err)
         res.status(500).json({ error: 'Failed to load registrations' })
@@ -63,15 +87,11 @@ router.post('/registrations/:id/active', requireAdmin, async (req, res) => {
             return res.json({ success: true, updated: true, active })
         }
 
-        const regsFile = path.join(dataDir, 'expert_regs.json')
-        let list = []
-        if (fs.existsSync(regsFile)) {
-            try { list = JSON.parse(fs.readFileSync(regsFile, 'utf8') || '[]') } catch (e) { list = [] }
-        }
-        const idx = list.findIndex(x => x._id === id || x.id === id)
+        const list = loadFileRegistrations()
+        const idx = getFileRegistrationIndex(list, id)
         if (idx === -1) return res.status(404).json({ error: 'Not found' })
         list[idx].active = active
-        fs.writeFileSync(regsFile, JSON.stringify(list, null, 2))
+        saveFileRegistrations(list)
         return res.json({ success: true, updated: true, active })
     } catch (err) {
         console.error('active toggle error', err)
@@ -94,21 +114,42 @@ router.post('/registrations/:id/active', requireAdmin, async (req, res) => {
          }
 
          // file fallback: toggle approved flag
-         const regsFile = path.join(dataDir, 'expert_regs.json')
-         let list = []
-         if (fs.existsSync(regsFile)) {
-             try { list = JSON.parse(fs.readFileSync(regsFile, 'utf8') || '[]') } catch (e) { list = [] }
-         }
-         const idx = list.findIndex(x => x._id === id || x.id === id)
+         const list = loadFileRegistrations()
+         const idx = getFileRegistrationIndex(list, id)
          if (idx === -1) return res.status(404).json({ error: 'Not found' })
          list[idx].approved = true
          list[idx].approvedAt = new Date().toISOString()
-         fs.writeFileSync(regsFile, JSON.stringify(list, null, 2))
+         saveFileRegistrations(list)
          return res.json({ success: true, updated: true })
      } catch (err) {
          console.error('approve error', err)
          res.status(500).json({ error: 'Failed to approve' })
      }
  })
+
+router.delete('/registrations/:id', requireAdmin, async (req, res) => {
+    try {
+        const id = req.params.id
+        if (mongoose.connection.readyState === 1) {
+            const reg = await ExpertRegistration.findById(id)
+            if (!reg) return res.status(404).json({ error: 'Not found' })
+            reg.adminHidden = true
+            reg.adminHiddenAt = new Date()
+            await reg.save()
+            return res.json({ success: true, hidden: true })
+        }
+
+        const list = loadFileRegistrations()
+        const idx = getFileRegistrationIndex(list, id)
+        if (idx === -1) return res.status(404).json({ error: 'Not found' })
+        list[idx].adminHidden = true
+        list[idx].adminHiddenAt = new Date().toISOString()
+        saveFileRegistrations(list)
+        return res.json({ success: true, hidden: true })
+    } catch (err) {
+        console.error('hide registration error', err)
+        res.status(500).json({ error: 'Failed to hide registration' })
+    }
+})
 
 module.exports = router

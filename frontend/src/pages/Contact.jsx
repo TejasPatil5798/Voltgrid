@@ -58,10 +58,9 @@ export default function Contact() {
 
   return (
     <main>
-      <section className="contact-hero contact-banner">
-        <div className="contact-hero-overlay">
-          <div className="contact-hero-content container">
-            <span className="section-tag">Contact</span>
+      <section className="about-hero">
+        <div className="about-hero-overlay">
+          <div className="about-hero-content">
             <h1>Connect with Voltgrid Insights</h1>
             <p>
               Reach out for training programs, customized institutional
@@ -73,7 +72,6 @@ export default function Contact() {
 
       <section className="contact-page">
         <div className="section-header contact-header">
-          <span className="section-tag">Get in Touch</span>
           <h2>We’d Be Glad to Support Your Training Requirement</h2>
           <p>
             Share your requirement and we will connect your enquiry to the most
@@ -93,9 +91,6 @@ export default function Contact() {
             </div>
 
             <div className="contact-highlight-panel">
-              <span className="section-tag contact-section-tag-light">
-                Common Enquiries
-              </span>
               <h3>How We Can Help</h3>
               <div className="contact-topic-grid">
                 {enquiryTopics.map((topic) => (
@@ -108,7 +103,6 @@ export default function Contact() {
           </div>
 
           <div className="contact-form-box">
-            <span className="section-tag">Send Us a Message</span>
             <h2>Contact Form</h2>
             <p className="contact-form-copy">
               Tell us about your organization, subject of interest, or program

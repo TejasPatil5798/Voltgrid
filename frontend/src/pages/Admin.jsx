@@ -99,6 +99,8 @@ export default function Admin(){
   const [refresh, setRefresh] = useState(0)
   const [previewImage, setPreviewImage] = useState(null)
   const [search, setSearch] = useState('')
+  const [approvalFilter, setApprovalFilter] = useState('all')
+  const [activeFilter, setActiveFilter] = useState('all')
   const contacts = useFetch('/api/admin/contacts', token, refresh)
   const regs = useFetch('/api/admin/registrations', token, refresh)
 
@@ -135,6 +137,27 @@ export default function Admin(){
     }
   }
 
+  async function deleteRegistration(id, name){
+    if(!token) return alert('Not authenticated')
+    const confirmed = window.confirm(`Remove expert registration for ${name || 'this user'} from the admin panel? The data will stay stored.`)
+    if(!confirmed) return
+    try{
+      const res = await fetch(apiUrl('/api/admin/registrations/' + id), {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      const data = await res.json().catch(() => null)
+      if(!res.ok || !data?.success) {
+        return alert('Remove failed: ' + (data?.error || res.statusText))
+      }
+      setRefresh(r => r + 1)
+    }catch(e){
+      alert('Remove failed: ' + e.message)
+    }
+  }
+
   const filteredRegs = Array.isArray(regs.data)
     ? regs.data.filter((r) => {
         const haystack = [
@@ -146,7 +169,17 @@ export default function Admin(){
           Array.isArray(r.domains) ? r.domains.join(' ') : r.domains,
           r.contactNumber,
         ].filter(Boolean).join(' ').toLowerCase()
-        return haystack.includes(search.trim().toLowerCase())
+        const matchesSearch = haystack.includes(search.trim().toLowerCase())
+        const matchesApproval =
+          approvalFilter === 'all' ||
+          (approvalFilter === 'approved' && r.approved) ||
+          (approvalFilter === 'not-approved' && !r.approved)
+        const matchesActive =
+          activeFilter === 'all' ||
+          (activeFilter === 'active' && r.active !== false) ||
+          (activeFilter === 'inactive' && r.active === false)
+
+        return matchesSearch && matchesApproval && matchesActive
       })
     : []
 
@@ -159,14 +192,36 @@ export default function Admin(){
 
       <section style={{marginTop:30}}>
         <h3>Expert Registrations</h3>
-        <input
-          className="form-input"
-          style={{maxWidth:420, marginTop:12}}
-          type="text"
-          placeholder="Search by name, email, domain, organization..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <div style={{display:'flex', gap:12, flexWrap:'wrap', alignItems:'center', marginTop:12}}>
+          <input
+            className="form-input"
+            style={{maxWidth:420, flex:'1 1 320px'}}
+            type="text"
+            placeholder="Search by name, email, domain, organization..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <select
+            className="form-input"
+            style={{minWidth:180}}
+            value={approvalFilter}
+            onChange={(e) => setApprovalFilter(e.target.value)}
+          >
+            <option value="all">All Approval Status</option>
+            <option value="approved">Approved</option>
+            <option value="not-approved">Not Approved</option>
+          </select>
+          <select
+            className="form-input"
+            style={{minWidth:160}}
+            value={activeFilter}
+            onChange={(e) => setActiveFilter(e.target.value)}
+          >
+            <option value="all">All Activity</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
         {regs.loading && <div>Loading...</div>}
         {regs.error && <div style={{color:'red'}}>{regs.error}</div>}
         {regs.data && regs.data.length===0 && <div>No registrations yet.</div>}
@@ -200,6 +255,13 @@ export default function Admin(){
                           className={`btn ${r.active === false ? 'btn-primary' : ''}`}
                         >
                           {r.active === false ? 'Set Active' : 'Set Inactive'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteRegistration(r._id || r.id, r.name)}
+                          className="btn btn-danger"
+                        >
+                          Remove
                         </button>
                       </div>
                     </div>

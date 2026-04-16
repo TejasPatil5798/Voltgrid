@@ -84,10 +84,9 @@ const residentialPoints = [
 export default function Safety() {
   return (
     <main>
-      <section className="safety-hero safety-banner">
-        <div className="safety-hero-overlay">
-          <div className="safety-hero-content container">
-            <span className="section-tag">Safety & Compliance</span>
+      <section className="about-hero">
+        <div className="about-hero-overlay">
+          <div className="about-hero-content">
             <h1>Safety & Compliance</h1>
             <p>
               Structured safety training programs designed to improve
@@ -100,7 +99,6 @@ export default function Safety() {
 
       <section className="safety-page">
         <div className="section-header safety-header">
-          <span className="section-tag">Safety Coverage</span>
           <h2>Structured Safety Learning for Operational Environments</h2>
           <p>
             Safety learning is delivered through practical, compliance-focused,
@@ -117,7 +115,6 @@ export default function Safety() {
             />
           </div>
           <div className="safety-feature-copy">
-            <span className="section-tag">Coverage</span>
             <h2>Coverage</h2>
             <ul className="safety-list">
               {safetyCoverage.map((item) => (
@@ -133,7 +130,6 @@ export default function Safety() {
 
         <section className="safety-surface">
           <div className="section-header safety-subheader">
-            <span className="section-tag">Training Approach</span>
             <h2>Training Approach</h2>
           </div>
           <div className="safety-grid">
@@ -147,7 +143,6 @@ export default function Safety() {
 
         <div className="safety-feature-card safety-feature-card-reverse">
           <div className="safety-feature-copy">
-            <span className="section-tag">Outcome</span>
             <h2>Outcome</h2>
             <ul className="safety-list">
               {safetyOutcomes.map((item) => (
@@ -169,9 +164,6 @@ export default function Safety() {
 
         <section className="safety-highlight-panel">
           <div className="section-header safety-subheader">
-            <span className="section-tag safety-section-tag-light">
-              Safety Integration in Operations
-            </span>
             <h2>Safety Integration in Operations</h2>
             <p>
               Safety learning is integrated into operational workflows through
@@ -189,7 +181,6 @@ export default function Safety() {
 
         <section className="safety-surface">
           <div className="section-header safety-subheader">
-            <span className="section-tag">Industry Alignment</span>
             <h2>Industry Alignment</h2>
             <p>
               Programs are structured to remain relevant across sectors,
@@ -205,7 +196,6 @@ export default function Safety() {
               />
             </div>
             <div className="safety-feature-copy">
-              <span className="section-tag">Alignment Approach</span>
               <h2>Alignment Approach</h2>
               <ul className="safety-list">
                 {alignmentPoints.map((item) => (
@@ -219,7 +209,7 @@ export default function Safety() {
             </div>
           </div>
 
-          <div className="safety-flex-grid">
+          <div className="safety-flex-grid mt-4">
             {flexibilityPoints.map((item) => (
               <div key={item} className="safety-flex-card">
                 {item}
@@ -230,7 +220,6 @@ export default function Safety() {
 
         <section className="safety-surface">
           <div className="section-header safety-subheader">
-            <span className="section-tag">Impact & Outcomes</span>
             <h2>Impact & Outcomes</h2>
             <p>
               Training effectiveness is assessed through measurable delivery
@@ -267,7 +256,6 @@ export default function Safety() {
 
         <section className="safety-programs-section">
           <div className="section-header safety-header">
-            <span className="section-tag">Training Programs</span>
             <h2>TRAINING PROGRAMS</h2>
             <p>
               The following program and methodology lines are included exactly
@@ -283,7 +271,6 @@ export default function Safety() {
               />
             </div>
             <div className="safety-feature-copy">
-              <span className="section-tag">Program Structure</span>
               <h2>Program Structure</h2>
               <p>
                 Programs are offered as modular training units, typically
@@ -294,7 +281,6 @@ export default function Safety() {
 
           <section className="safety-surface">
             <div className="section-header safety-subheader">
-              <span className="section-tag">Program Categories</span>
               <h2>Program Categories</h2>
             </div>
             <div className="safety-program-category-grid">
@@ -308,7 +294,6 @@ export default function Safety() {
 
           <div className="safety-feature-card safety-feature-card-reverse">
             <div className="safety-feature-copy">
-              <span className="section-tag">Customized Programs</span>
               <h2>Customized Programs</h2>
               <p>Programs can be customized based on:</p>
               <ul className="safety-list">
@@ -327,13 +312,11 @@ export default function Safety() {
 
           <section className="safety-surface">
             <div className="section-header safety-subheader">
-              <span className="section-tag">TRAINING METHODOLOGY</span>
               <h2>TRAINING METHODOLOGY</h2>
             </div>
 
             <div className="safety-method-grid">
               <article className="safety-method-card">
-                <span className="section-tag">Approach</span>
                 <h3>Approach</h3>
                 <ul className="safety-list">
                   {methodologyApproach.map((item) => (
@@ -343,7 +326,6 @@ export default function Safety() {
               </article>
 
               <article className="safety-method-card">
-                <span className="section-tag">Methods Used</span>
                 <h3>Methods Used</h3>
                 <ul className="safety-list">
                   {methodsUsed.map((item) => (
@@ -355,9 +337,6 @@ export default function Safety() {
 
             <div className="safety-residential-panel">
               <div className="safety-residential-copy">
-                <span className="section-tag safety-section-tag-light">
-                  Residential Learning Model
-                </span>
                 <h3>Residential Learning Model</h3>
                 <p>
                   Residential programs follow an immersive learning approach,
