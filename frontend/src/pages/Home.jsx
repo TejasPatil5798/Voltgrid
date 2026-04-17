@@ -3,6 +3,7 @@ import carousel1 from "../assets/images/crousal1.jpeg";
 import carousel2 from "../assets/images/crousal2.jpg";
 import carousel3 from "../assets/images/crousal3.jpg";
 import carousel4 from "../assets/images/crousal4.png";
+import trainingImg from "../assets/images/training.jpg";
 
 export default function Home() {
   const slides = [
@@ -30,22 +31,19 @@ export default function Home() {
     const id = setInterval(() => {
       setCurrent((c) => (c + 1) % slides.length);
     }, 4000);
+
     return () => clearInterval(id);
-  }, []);
+  }, [slides.length]);
 
   return (
     <main>
       <section className="slider">
         {slides.map((s, i) => (
           <div
-            key={s.src}
+            key={i}
             className={"slide" + (i === current ? " active" : "")}
           >
-            <img
-              src={s.src + "?auto=format&fit=crop&w=1600&q=80"}
-              alt={s.alt}
-              loading="lazy"
-            />
+            <img src={s.src} alt={s.alt} loading={i === 0 ? "eager" : "lazy"} />
             <div className="overlay">
               <h1 style={{ color: "white" }}>
                 Capacity Building and Professional Training Across <br />
@@ -79,13 +77,10 @@ export default function Home() {
       <section className="institution-section">
         <div className="institution-container">
           <div className="institution-image">
-            <img
-              src="src\assets\images\training.jpg"
-              alt="Institutional Training"
-            />
+            <img src={trainingImg} alt="Institutional Training" />
           </div>
           <div className="institution-content">
-            <h2 className="head-sec"> What We Deliver</h2>
+            <h2 className="head-sec">What We Deliver</h2>
             <p>
               Voltgrid Insights delivers structured training and
               capability-building programs designed to enhance technical
@@ -110,6 +105,7 @@ export default function Home() {
             capacity building.
           </p>
         </div>
+
         <div className="domains-grid">
           <div className="domain-box">
             <h3>Technical & Engineering Systems</h3>
@@ -120,6 +116,7 @@ export default function Home() {
               <li>Diagnostics and maintenance practices</li>
             </ul>
           </div>
+
           <div className="domain-box">
             <h3>Operations & System Management</h3>
             <ul>
@@ -128,6 +125,7 @@ export default function Home() {
               <li>Data-driven operational management</li>
             </ul>
           </div>
+
           <div className="domain-box">
             <h3>Safety & Compliance</h3>
             <ul>
@@ -137,6 +135,7 @@ export default function Home() {
               <li>Incident investigation and corrective actions</li>
             </ul>
           </div>
+
           <div className="domain-box">
             <h3>Asset & Maintenance Management</h3>
             <ul>
@@ -145,6 +144,7 @@ export default function Home() {
               <li>Reliability-centered maintenance strategies</li>
             </ul>
           </div>
+
           <div className="domain-box">
             <h3>Project & Contract Management</h3>
             <ul>
@@ -153,6 +153,7 @@ export default function Home() {
               <li>Stakeholder coordination</li>
             </ul>
           </div>
+
           <div className="domain-box">
             <h3>Regulatory, Financial & Leadership</h3>
             <ul>
@@ -170,32 +171,33 @@ export default function Home() {
         <div className="section-header">
           <h2>Training Delivery Formats</h2>
         </div>
+
         <div className="formats-grid">
           <div className="format-card">
             <div className="format-icon">
               <i className="fas fa-building"></i>
             </div>
-            <h3> On-site training at client locations</h3>
+            <h3>On-site training at client locations</h3>
           </div>
+
           <div className="format-card">
             <div className="format-icon">
               <i className="fas fa-users"></i>
             </div>
             <h3>Centralised training programs</h3>
           </div>
+
           <div className="format-card">
             <div className="format-icon">
               <i className="fas fa-hotel"></i>
             </div>
-            <h3>
-              Residential training programs (structured immersive format){" "}
-            </h3>
+            <h3>Residential training programs (structured immersive format)</h3>
           </div>
         </div>
+
         <div className="format-note">
           <p style={{ fontSize: "18px" }}>
             <strong>
-              {" "}
               Residential programs are conducted subject to program design,
               batch size, and availability of suitable training facilities.
             </strong>
@@ -211,6 +213,7 @@ export default function Home() {
             development, practical relevance, and organizational adaptability.
           </p>
         </div>
+
         <div className="structure-grid">
           <div className="structure-card">
             <div className="structure-icon">
@@ -222,6 +225,7 @@ export default function Home() {
               complexity, and participant level.
             </p>
           </div>
+
           <div className="structure-card">
             <div className="structure-icon">
               <i className="fas fa-layer-group"></i>
@@ -233,6 +237,7 @@ export default function Home() {
               understanding of key concepts.
             </p>
           </div>
+
           <div className="structure-card">
             <div className="structure-icon">
               <i className="fas fa-chalkboard-teacher"></i>
@@ -245,6 +250,7 @@ export default function Home() {
               operational environments.
             </p>
           </div>
+
           <div className="structure-card">
             <div className="structure-icon">
               <i className="fas fa-sliders-h"></i>
@@ -267,6 +273,7 @@ export default function Home() {
             training interventions.
           </p>
         </div>
+
         <div className="outcomes-grid">
           <div className="outcome-box">
             <i className="fas fa-chart-line"></i>
@@ -275,6 +282,7 @@ export default function Home() {
               Improvement in operational performance and execution capability.
             </p>
           </div>
+
           <div className="outcome-box">
             <i className="fas fa-check-circle"></i>
             <h3>Compliance Adherence</h3>
@@ -282,11 +290,13 @@ export default function Home() {
               Increased adherence to procedures and compliance requirements.
             </p>
           </div>
+
           <div className="outcome-box">
             <i className="fas fa-shield-alt"></i>
             <h3>Risk Reduction</h3>
             <p>Reduction in operational and safety-related risks.</p>
           </div>
+
           <div className="outcome-box">
             <i className="fas fa-user-cog"></i>
             <h3>Capability Enhancement</h3>
