@@ -1,4 +1,11 @@
 import React from "react";
+import safetyHeroImage from "../assets/images/safety-hero.png";
+import safetyCoverageImage from "../assets/images/gettyimages-1166085429-612x612.jpg";
+import safetyOutcomeImage from "../assets/images/gettyimages-1179434300-612x612.jpg";
+import safetyAlignmentImage from "../assets/images/gettyimages-1301243910-612x612.jpg";
+import safetyProgramImage from "../assets/images/gettyimages-661805558-612x612.jpg";
+import safetyCustomImage from "../assets/images/towers.jpg";
+import safetyResidentialImage from "../assets/images/IMG_20220425_101407.jpg.jpeg";
 
 const safetyCoverage = [
   "Workplace safety systems",
@@ -27,10 +34,10 @@ const alignmentPoints = [
 ];
 
 const flexibilityPoints = [
-  "Utilities",
-  "Infrastructure Systems",
-  "Industrial Operations",
-  "Public Sector Organizations",
+  { label: "Utilities", icon: "fas fa-bolt" },
+  { label: "Infrastructure Systems", icon: "fas fa-city" },
+  { label: "Industrial Operations", icon: "fas fa-industry" },
+  { label: "Public Sector Organizations", icon: "fas fa-landmark" },
 ];
 
 const impactIndicators = [
@@ -84,47 +91,40 @@ const residentialPoints = [
 export default function Safety() {
   return (
     <main>
-      <section className="about-hero">
+      <section
+        className="about-hero"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url(${safetyHeroImage})`,
+        }}
+      >
         <div className="about-hero-overlay">
           <div className="about-hero-content">
             <h1>Safety & Compliance</h1>
             <p>
-              Structured safety training programs designed to improve
-              compliance, reduce operational risks, and strengthen
-              institutional safety culture.
+              All programs are designed and delivered in alignment with
+              applicable safety regulations, organisational procedures, and
+              industry standards, ensuring compliance, risk mitigation, and
+              audit readiness.
             </p>
           </div>
         </div>
       </section>
 
       <section className="safety-page">
-        <div className="section-header safety-header">
-          <h2>Structured Safety Learning for Operational Environments</h2>
-          <p>
-            Safety learning is delivered through practical, compliance-focused,
-            and field-relevant modules designed for institutional and industrial
-            settings.
-          </p>
-        </div>
-
         <div className="safety-feature-card">
           <div className="safety-feature-media">
             <img
-              src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=1200&q=80"
+              src={safetyCoverageImage}
               alt="Safety training and workplace compliance"
             />
           </div>
           <div className="safety-feature-copy">
-            <h2>Coverage</h2>
+            <h2 className="head-sec">Coverage</h2>
             <ul className="safety-list">
               {safetyCoverage.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
-            <p>
-              Programs are designed to support operational safety, regulatory
-              adherence, and workplace risk control across multiple sectors.
-            </p>
           </div>
         </div>
 
@@ -143,224 +143,56 @@ export default function Safety() {
 
         <div className="safety-feature-card safety-feature-card-reverse">
           <div className="safety-feature-copy">
-            <h2>Outcome</h2>
+            <h2 className="head-sec">Outcome</h2>
             <ul className="safety-list">
               {safetyOutcomes.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
-            <p>
-              Training interventions are designed to improve decision-making,
-              hazard response capability, and long-term compliance performance.
-            </p>
           </div>
           <div className="safety-feature-media">
             <img
-              src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80"
+              src={safetyOutcomeImage}
               alt="Improved safety outcomes and organizational readiness"
             />
           </div>
         </div>
 
-        <section className="safety-highlight-panel">
-          <div className="section-header safety-subheader">
-            <h2>Safety Integration in Operations</h2>
-            <p>
-              Safety learning is integrated into operational workflows through
-              procedure-based instruction, field-oriented examples, and
-              practical compliance discussions aligned with sector practices.
-            </p>
-          </div>
-          <div className="safety-highlight-grid">
-            <div className="safety-highlight-box">Permit-to-work systems</div>
-            <div className="safety-highlight-box">Lockout / Tagout awareness</div>
-            <div className="safety-highlight-box">Emergency response readiness</div>
-            <div className="safety-highlight-box">Operational hazard communication</div>
-          </div>
-        </section>
-
         <section className="safety-surface">
           <div className="section-header safety-subheader">
             <h2>Industry Alignment</h2>
-            <p>
-              Programs are structured to remain relevant across sectors,
-              operational environments, and regulatory expectations.
-            </p>
           </div>
 
           <div className="safety-feature-card safety-feature-card-plain">
             <div className="safety-feature-media">
               <img
-                src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80"
+                src={safetyAlignmentImage}
                 alt="Industry alignment and compliance frameworks"
               />
             </div>
             <div className="safety-feature-copy">
-              <h2>Alignment Approach</h2>
+              <h2 className="head-sec">Approach</h2>
+              <p>Programs are aligned with:</p>
               <ul className="safety-list">
                 {alignmentPoints.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
-              <p>
-                Training design integrates practical sector requirements to
-                ensure direct relevance to participant roles and systems.
-              </p>
             </div>
           </div>
 
           <div className="safety-flex-grid mt-4">
             {flexibilityPoints.map((item) => (
-              <div key={item} className="safety-flex-card">
-                {item}
+              <div key={item.label} className="safety-flex-card">
+                <div className="safety-flex-icon">
+                  <i className={item.icon}></i>
+                </div>
+                <div>{item.label}</div>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="safety-surface">
-          <div className="section-header safety-subheader">
-            <h2>Impact & Outcomes</h2>
-            <p>
-              Training effectiveness is assessed through measurable delivery
-              indicators and operational impact areas.
-            </p>
-          </div>
-
-          <div className="safety-impact-grid-wrap">
-            <article className="safety-impact-card">
-              <h3>Performance Indicators</h3>
-              <ul className="safety-list">
-                {impactIndicators.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-              <p>
-                Program delivery indicators reflect institutional reach, sector
-                engagement, and training scale.
-              </p>
-            </article>
-
-            <article className="safety-impact-card">
-              <h3>Outcome Areas</h3>
-              <div className="safety-impact-tiles">
-                {impactAreas.map((item) => (
-                  <div key={item} className="safety-impact-tile">
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <section className="safety-programs-section">
-          <div className="section-header safety-header">
-            <h2>TRAINING PROGRAMS</h2>
-            <p>
-              The following program and methodology lines are included exactly
-              as requested.
-            </p>
-          </div>
-
-          <div className="safety-feature-card">
-            <div className="safety-feature-media">
-              <img
-                src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80"
-                alt="Structured training program delivery"
-              />
-            </div>
-            <div className="safety-feature-copy">
-              <h2>Program Structure</h2>
-              <p>
-                Programs are offered as modular training units, typically
-                structured over 3-5 days.
-              </p>
-            </div>
-          </div>
-
-          <section className="safety-surface">
-            <div className="section-header safety-subheader">
-              <h2>Program Categories</h2>
-            </div>
-            <div className="safety-program-category-grid">
-              {programCategories.map((item) => (
-                <div key={item} className="safety-program-category-card">
-                  {item}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <div className="safety-feature-card safety-feature-card-reverse">
-            <div className="safety-feature-copy">
-              <h2>Customized Programs</h2>
-              <p>Programs can be customized based on:</p>
-              <ul className="safety-list">
-                {customizationPoints.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="safety-feature-media">
-              <img
-                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
-                alt="Customized program design"
-              />
-            </div>
-          </div>
-
-          <section className="safety-surface">
-            <div className="section-header safety-subheader">
-              <h2>TRAINING METHODOLOGY</h2>
-            </div>
-
-            <div className="safety-method-grid">
-              <article className="safety-method-card">
-                <h3>Approach</h3>
-                <ul className="safety-list">
-                  {methodologyApproach.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </article>
-
-              <article className="safety-method-card">
-                <h3>Methods Used</h3>
-                <ul className="safety-list">
-                  {methodsUsed.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </article>
-            </div>
-
-            <div className="safety-residential-panel">
-              <div className="safety-residential-copy">
-                <h3>Residential Learning Model</h3>
-                <p>
-                  Residential programs follow an immersive learning approach,
-                  including:
-                </p>
-                <ul className="safety-list safety-list-light">
-                  {residentialPoints.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-                <p className="safety-residential-note">
-                  This format improves knowledge, retention, and application
-                  capability, subject to facility and batch planning.
-                </p>
-              </div>
-              <div className="safety-residential-media">
-                <img
-                  src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80"
-                  alt="Residential learning model"
-                />
-              </div>
-            </div>
-          </section>
-        </section>
       </section>
     </main>
   );

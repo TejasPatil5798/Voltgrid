@@ -33,14 +33,21 @@ export default function Footer() {
         </div>
         <div className="footer-box">
           <h3>Contact Info</h3>
-          <p>Email: voltgrid@gmail.com</p>
-          <p>Phone: 0000000000</p>
           <p>
-            Vaswani Chambers,
+            Email:{" "}
+            <a href="mailto:contact@voltgridinsights.com">
+              contact@voltgridinsights.com
+            </a>
+          </p>
+          <p>
+            Phone: <a href="tel:9607700480">9607700480</a>
+          </p>
+          <p>
+            VASWANI CHAMBERS,
             <br />
-            Worli, Mumbai,
+            WORLI, MUMBAI,
             <br />
-            Maharashtra - 400030
+            MAHARASHTRA-400030
           </p>
         </div>
       </div>

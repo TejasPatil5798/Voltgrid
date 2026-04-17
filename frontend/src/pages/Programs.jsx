@@ -1,4 +1,8 @@
 import React from "react";
+import programsHeroImage from "../assets/images/IMG-20220502-WA0001.jpg";
+import trainingImage from "../assets/images/training.jpg";
+import towersImage from "../assets/images/towers.jpg";
+import residentialImage from "../assets/images/pexels-pavel-danilyuk-8761523.jpg";
 
 const programCategories = [
   "Technical & Engineering Systems",
@@ -38,7 +42,12 @@ const residentialPoints = [
 export default function Programs() {
   return (
     <main>
-      <section className="about-hero">
+      <section
+        className="about-hero"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url(${programsHeroImage})`,
+        }}
+      >
         <div className="about-hero-overlay">
           <div className="about-hero-content">
           <h1>Training Programs</h1>
@@ -64,12 +73,12 @@ export default function Programs() {
         <div className="programs-feature-card">
           <div className="programs-feature-media">
             <img
-              src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80"
+              src={trainingImage}
               alt="Training program planning and structured delivery"
             />
           </div>
           <div className="programs-feature-copy">
-            <h2>Program Structure</h2>
+            <h2 className="head-sec">Program Structure</h2>
             <p>
               Programs are offered as modular training units, typically
               structured over 3-5 days.
@@ -92,7 +101,7 @@ export default function Programs() {
 
         <section className="programs-feature-card programs-feature-card-reverse">
           <div className="programs-feature-copy">
-            <h2>Customized Programs</h2>
+            <h2 className="head-sec">Customized Programs</h2>
             <p>Programs can be customized based on:</p>
             <ul className="programs-list">
               {customizationPoints.map((point) => (
@@ -102,7 +111,7 @@ export default function Programs() {
           </div>
           <div className="programs-feature-media">
             <img
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
+              src={towersImage}
               alt="Customized training programs and participant engagement"
             />
           </div>
@@ -115,7 +124,7 @@ export default function Programs() {
 
           <div className="programs-methodology-grid">
             <article className="programs-method-card">
-              <h3>Approach</h3>
+              <h3 className="head-sec">Approach</h3>
               <ul className="programs-list">
                 {approachPoints.map((point) => (
                   <li key={point}>{point}</li>
@@ -124,7 +133,7 @@ export default function Programs() {
             </article>
 
             <article className="programs-method-card">
-              <h3>Methods Used</h3>
+              <h3 className="head-sec">Methods Used</h3>
               <ul className="programs-list">
                 {methodsUsed.map((point) => (
                   <li key={point}>{point}</li>
@@ -152,7 +161,7 @@ export default function Programs() {
             </div>
             <div className="programs-residential-media">
               <img
-                src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80"
+                src={residentialImage}
                 alt="Residential learning and immersive group engagement"
               />
             </div>

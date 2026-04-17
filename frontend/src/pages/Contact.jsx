@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { apiUrl } from '../lib/api'
+import React from "react";
+import contactHeroImage from "../assets/images/contact-hero.jpeg";
 
 const contactCards = [
   {
@@ -8,7 +8,7 @@ const contactCards = [
   },
   {
     title: "Email",
-    text: "voltgridinsights@gmail.com",
+    text: "contact@voltgridinsights.com",
   },
   {
     title: "Registered Address",
@@ -23,42 +23,20 @@ const enquiryTopics = [
   "Partnerships and collaborations",
 ];
 
+const googleFormUrl =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdk2Rk-MGz8gcAOvwbHqrNhlC_JxrXGOxeodFfGv5uHrnDFtQ/viewform?usp=pp_url";
+const googleFormEmbedUrl =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdk2Rk-MGz8gcAOvwbHqrNhlC_JxrXGOxeodFfGv5uHrnDFtQ/viewform?embedded=true";
+
 export default function Contact() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-  const [status, setStatus] = useState(null);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setStatus("sending");
-    try {
-      const res = await fetch(apiUrl("/api/contact"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          message: form.message,
-        }),
-      });
-      if (res.ok) {
-        setStatus("sent");
-        setForm({ name: "", email: "", subject: "", message: "" });
-      } else {
-        setStatus("error");
-      }
-    } catch (err) {
-      setStatus("error");
-    }
-  }
-
   return (
     <main>
-      <section className="about-hero">
+      <section
+        className="about-hero"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url(${contactHeroImage})`,
+        }}
+      >
         <div className="about-hero-overlay">
           <div className="about-hero-content">
             <h1>Connect with Voltgrid Insights</h1>
@@ -84,7 +62,7 @@ export default function Contact() {
             <div className="contact-card-grid">
               {contactCards.map((card) => (
                 <div key={card.title} className="contact-card">
-                  <h3>{card.title}</h3>
+                  <h3 className="head-sec">{card.title}</h3>
                   <p>{card.text}</p>
                 </div>
               ))}
@@ -103,53 +81,28 @@ export default function Contact() {
           </div>
 
           <div className="contact-form-box">
-            <h2>Contact Form</h2>
+            <h2 className="head-sec">Contact Form</h2>
             <p className="contact-form-copy">
-              Tell us about your organization, subject of interest, or program
-              requirement and we will get back to you.
+              Fill out the Google Form below to share your requirement. If the
+              form does not load, use the direct link to open it in a new tab.
             </p>
-            <form onSubmit={handleSubmit} className="contact-form">
-              <input
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                type="text"
-                placeholder="Full name"
-                required
-              />
-              <input
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                type="email"
-                placeholder="Official email"
-                required
-              />
-              <input
-                value={form.subject}
-                onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                type="text"
-                placeholder="Subject"
-              />
-              <textarea
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                rows="6"
-                placeholder="Your message"
-                required
-              />
-              <button type="submit" className="btn btn-primary contact-submit">
-                {status === "sending" ? "Sending..." : "Submit"}
-              </button>
-            </form>
-            {status === "sent" && (
-              <p className="contact-status contact-status-success">
-                Your message has been sent successfully.
-              </p>
-            )}
-            {status === "error" && (
-              <p className="contact-status contact-status-error">
-                Failed to send your message. Please try again.
-              </p>
-            )}
+            <a
+              href={googleFormUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-primary contact-submit"
+              style={{ textDecoration: "none" }}
+            >
+              Open Google Form
+            </a>
+            <iframe
+              title="Voltgrid contact form"
+              src={googleFormEmbedUrl}
+              className="contact-form-embed"
+              loading="lazy"
+            >
+              Loading…
+            </iframe>
           </div>
         </div>
       </section>

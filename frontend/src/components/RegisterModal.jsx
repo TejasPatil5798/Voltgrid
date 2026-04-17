@@ -77,10 +77,10 @@ export default function RegisterModal({ expert, onClose }) {
   }
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal">
+    <div className="register-modal-backdrop">
+      <div className="register-modal">
         <h2>{expert?.name ? `Register Interest for ${expert.name}` : 'Register for Training / Enquire'}</h2>
-        <p className="modal-copy">
+        <p className="register-modal-copy">
           Submit your details and program requirement. We will connect the enquiry to the most relevant expert or training track.
         </p>
 

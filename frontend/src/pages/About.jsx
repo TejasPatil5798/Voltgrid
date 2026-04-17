@@ -1,4 +1,9 @@
 import React from "react";
+import aboutHeroImage from "../assets/images/abt_hero.jpg";
+import overviewImage from "../assets/images/imp.jpg";
+import visionImage from "../assets/images/vision1.JPG?url";
+import missionImage from "../assets/images/mission.jpg";
+import impactImage from "../assets/images/Impact.jpg";
 
 export default function About() {
   const initiatives = [
@@ -53,7 +58,12 @@ export default function About() {
 
   return (
     <main>
-      <section className="about-hero">
+      <section
+        className="about-hero"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url(${aboutHeroImage})`,
+        }}
+      >
         <div className="about-hero-overlay">
           <div className="about-hero-content">
             <h1>About Us</h1>
@@ -66,23 +76,15 @@ export default function About() {
         </div>
       </section>
       <section className="about-page">
-        <div className="section-header about-header">
-          <span className="section-tag">About Voltgrid Insights</span>
-          <h2>Capability-Building with Operational Relevance</h2>
-          <p>
-            Structured institutional training framework designed for technical,
-            operational, managerial, and compliance-focused capacity building.
-          </p>
-        </div>
         <div className="about-row about-feature-card">
           <div className="about-image about-media">
             <img
-              src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80"
+              src={overviewImage}
               alt="Professional training and planning discussion"
             />
           </div>
           <div className="about-text">
-            <h2>Overview</h2>
+            <h2 className="head-sec">Overview</h2>
             <p>
               Voltgrid Insights focuses on capability-building and
               knowledge-driven programs across technical, operational, and
@@ -100,10 +102,10 @@ export default function About() {
         <div className="vision-mission-grid">
           <div className="info-card">
             <img
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
+              src={visionImage}
               alt="Collaborative workforce vision"
             />
-            <h2>Vision</h2>
+            <h2 className="head-sec">Vision</h2>
             <p>
               To develop a{" "}
               <strong>
@@ -114,10 +116,10 @@ export default function About() {
           </div>
           <div className="info-card">
             <img
-              src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80"
+              src={missionImage}
               alt="Mission-led professional development"
             />
-            <h2>Mission</h2>
+            <h2 className="head-sec">Mission</h2>
             <ul className="about-check-list">
               <li>Deliver structured and measurable programs </li>
               <li>Improve operational efficiency and system performance</li>
@@ -129,8 +131,9 @@ export default function About() {
 
         <div className="capabilities-section about-surface">
           <div className="section-header about-subheader">
-            <span className="section-tag">Core Capabilities</span>
-            <h2>Multi-Domain Expertise for Institutional Learning</h2>
+            <h2>
+              Multi-Domain Capability for Technical and Operational Excellence
+            </h2>
           </div>
           <div className="capability-grid">
             <div className="capability-card">
@@ -154,104 +157,117 @@ export default function About() {
           </div>
         </div>
 
-        <div className="about-row reverse about-feature-card">
-          <div className="about-text">
-            <span className="section-tag">Sector Coverage</span>
-            <h2>Sector Coverage</h2>
-            <p>
-              Programs are adaptable across utility, infrastructure, industrial,
-              and public-sector environments where operational reliability and
-              workforce capability are critical.
-            </p>
-            <ul className="about-check-list">
-              <li>Power and Energy</li>
-              <li>Infrastructure and Utilities</li>
-              <li>Manufacturing and Industrial Systems</li>
-              <li>Government and Public Administration</li>
-            </ul>
+        <div className="training-formats">
+          <div className="section-header">
+            <h2 className="head-sec">Sector Coverage</h2>
           </div>
-          <div className="about-image about-media">
-            <img
-              src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80"
-              alt="Sector coverage across corporate and institutional environments"
-            />
+          <div className="formats-grid">
+            <div className="format-card">
+              <div className="format-icon">
+                <i className="fas fa-bolt"></i>
+              </div>
+              <h3>Power and Energy</h3>
+            </div>
+            <div className="format-card">
+              <div className="format-icon">
+                <i className="fas fa-city"></i>
+              </div>
+              <h3>Infrastructure and Utilities</h3>
+            </div>
+            <div className="format-card">
+              <div className="format-icon">
+                <i className="fas fa-industry"></i>
+              </div>
+              <h3>Manufacturing and Industrial Systems</h3>
+            </div>
+            <div className="format-card">
+              <div className="format-icon">
+                <i className="fas fa-landmark"></i>
+              </div>
+              <h3>Government and Public Administration</h3>
+            </div>
           </div>
         </div>
 
         <div className="why-section about-surface">
           <div className="section-header about-subheader">
-            <span className="section-tag">Who We Work With</span>
-            <h2>Institutional and Industry-Focused Engagement</h2>
+            <h2>Who We Work With</h2>
           </div>
           <div className="why-grid">
-            <div className="why-card">Government Departments</div>
-            <div className="why-card">Public Sector Undertakings (PSUs)</div>
-            <div className="why-card">
-              Infrastructure and Utility Organizations{" "}
+            <div className="capability-card">
+              <strong>Government Departments</strong>
             </div>
-            <div className="why-card">
-              Industrial and Manufacturing Enterprises
+            <div className="capability-card">
+              <strong>Public Sector Undertakings (PSUs)</strong>
+            </div>
+            <div className="capability-card">
+              <strong>Infrastructure and Utility Organizations</strong>
+            </div>
+            <div className="capability-card">
+              <strong>Industrial and Manufacturing Enterprises</strong>
             </div>
           </div>
         </div>
 
-        <div className="about-row about-feature-card about-compliance-card">
-          <div className="about-image about-media">
-            <img
-              src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=80"
-              alt="Compliance alignment and standards-led execution"
-            />
-          </div>
+        <div className="about-feature-card about-compliance-card">
           <div className="about-text">
-            <span className="section-tag">Compliance Alignment</span>
-            <h2>Compliance Alignment</h2>
-            <p>
-              Programs are aligned with applicable regulatory frameworks,
-              organisational procedures, and industry standards.
+            <h2 className="head-sec text-center">Compliance Alignment</h2>
+            <p className="text-center">
+              <strong>
+                All programs are designed and delivered in alignment with
+                applicable regulatory requirements, institutional procedures,
+                and relevant industry standards, ensuring audit readiness and
+                compliance with governing frameworks.
+              </strong>
             </p>
-            <div className="about-inline-note">
-              Alignment supports consistency, operational discipline, and
-              practical adoption in real working environments.
-            </div>
           </div>
         </div>
 
         <div className="why-section about-surface">
           <div className="section-header about-subheader">
-            <span className="section-tag">Why Choose Us</span>
             <h2>Why Choose Voltgrid Insights</h2>
           </div>
           <div className="why-grid">
-            <div className="why-card">
+            <div className="capability-card">
               Structured and competency-based approach
             </div>
-            <div className="why-card">
+            <div className="capability-card">
               Programs aligned with operational requirements and industry
               practices{" "}
             </div>
-            <div className="why-card">
+            <div className="capability-card">
               Multi-domain capability across technical, operational, and
               management areas
             </div>
-            <div className="why-card">
+            <div className="capability-card">
               Flexible delivery formats including residential programs
             </div>
-            <div className="why-card">
+            <div className="capability-card">
               Focus on practical application and measurable outcomes
             </div>
           </div>
         </div>
 
+        <section className="about-impact-hero">
+          <div className="about-impact-overlay">
+            <div className="about-impact-content">
+              <h1>Impact</h1>
+              <p>Driving Knowledge. Strengthening Systems.</p>
+            </div>
+          </div>
+        </section>
+
         <section className="field-initiatives-section">
           <div className="field-initiatives-intro">
             <div className="field-initiatives-copy">
-              <span className="section-tag">Field Initiatives & Impact</span>
-              <h2>Driving Knowledge. Strengthening Systems.</h2>
+              <h2 className="head-sec">
+                Driving Knowledge. Strengthening Systems.
+              </h2>
               <p>
-                Voltgrid Insights has undertaken multiple on-ground
-                initiatives focused on strengthening technical awareness,
-                safety practices, and system-level understanding across
-                operational environments and community interfaces.
+                Voltgrid Insights has undertaken multiple on-ground initiatives
+                focused on strengthening technical awareness, safety practices,
+                and system-level understanding across operational environments
+                and community interfaces.
               </p>
               <p>
                 These initiatives extend beyond structured programs into real
@@ -261,11 +277,15 @@ export default function About() {
             </div>
             <div className="field-initiatives-image">
               <img
-                src="https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1200&q=80"
+                src={impactImage}
                 alt="Field engagement around power infrastructure"
               />
             </div>
           </div>
+
+          <h2 className="head-sec mt-4">
+            Our Initiatives
+          </h2>
 
           <div className="field-initiatives-grid">
             {initiatives.map((initiative) => (
@@ -283,12 +303,7 @@ export default function About() {
 
           <div className="field-impact-panel">
             <div className="field-impact-heading">
-              <h3>Impact</h3>
-              <p>
-                These initiatives strengthen awareness, improve safer behavior,
-                and support more confident field-level responses in practical
-                environments.
-              </p>
+              <h3 className="text-center">Impact</h3>
             </div>
             <div className="field-impact-grid">
               {impactPoints.map((point) => (

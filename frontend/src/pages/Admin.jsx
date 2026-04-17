@@ -46,9 +46,25 @@ const adminBodyStyle = {
 const adminTopStyle = {
   display: 'flex',
   justifyContent: 'space-between',
-  alignItems: 'flex-start',
+  alignItems: 'center',
   gap: 12,
   flexWrap: 'wrap',
+}
+
+const adminActionsStyle = {
+  display: 'flex',
+  gap: 8,
+  flexWrap: 'wrap',
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+}
+
+const approvedBadgeStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  color: 'green',
+  fontWeight: 600,
+  lineHeight: 1.2,
 }
 
 function useFetch(url, token, refreshKey){
@@ -247,8 +263,8 @@ export default function Admin(){
                       <div className="muted">{r.title || ''} {r.yearsExperience ? `· ${r.yearsExperience} yrs` : ''}</div>
                     </div>
                     <div className="admin-card-action">
-                      <div style={{display:'flex', gap:8, flexWrap:'wrap', justifyContent:'flex-end'}}>
-                        {r.approved ? <span style={{color:'green'}}>Approved</span> : <button onClick={()=>approve(r._id || r.id)} className="btn">Approve</button>}
+                      <div style={adminActionsStyle}>
+                        {r.approved ? <span style={approvedBadgeStyle}>Approved</span> : <button onClick={()=>approve(r._id || r.id)} className="btn">Approve</button>}
                         <button
                           type="button"
                           onClick={() => setActive(r._id || r.id, r.active === false)}
