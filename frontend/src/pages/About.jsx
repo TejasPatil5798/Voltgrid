@@ -1,7 +1,7 @@
 import React from "react";
 import aboutHeroImage from "../assets/images/abt_hero.jpg";
 import overviewImage from "../assets/images/imp.jpg";
-import visionImage from "../assets/images/vision1.JPG?url";
+import visionImage from "../assets/images/vision1.JPG";
 import missionImage from "../assets/images/mission.jpg";
 import impactImage from "../assets/images/Impact.jpg";
 
@@ -75,6 +75,7 @@ export default function About() {
           </div>
         </div>
       </section>
+
       <section className="about-page">
         <div className="about-row about-feature-card">
           <div className="about-image about-media">
@@ -101,10 +102,7 @@ export default function About() {
 
         <div className="vision-mission-grid">
           <div className="info-card">
-            <img
-              src={visionImage}
-              alt="Collaborative workforce vision"
-            />
+            <img src={visionImage} alt="Collaborative workforce vision" />
             <h2 className="head-sec">Vision</h2>
             <p>
               To develop a{" "}
@@ -114,14 +112,12 @@ export default function About() {
               across sectors.
             </p>
           </div>
+
           <div className="info-card">
-            <img
-              src={missionImage}
-              alt="Mission-led professional development"
-            />
+            <img src={missionImage} alt="Mission-led professional development" />
             <h2 className="head-sec">Mission</h2>
             <ul className="about-check-list">
-              <li>Deliver structured and measurable programs </li>
+              <li>Deliver structured and measurable programs</li>
               <li>Improve operational efficiency and system performance</li>
               <li>Enable compliance with applicable regulations</li>
               <li>Strengthen leadership and organisational capability</li>
@@ -233,7 +229,7 @@ export default function About() {
             </div>
             <div className="capability-card">
               Programs aligned with operational requirements and industry
-              practices{" "}
+              practices
             </div>
             <div className="capability-card">
               Multi-domain capability across technical, operational, and
@@ -283,9 +279,7 @@ export default function About() {
             </div>
           </div>
 
-          <h2 className="head-sec mt-4">
-            Our Initiatives
-          </h2>
+          <h2 className="head-sec mt-4">Our Initiatives</h2>
 
           <div className="field-initiatives-grid">
             {initiatives.map((initiative) => (

@@ -50,12 +50,12 @@ export default function Programs() {
       >
         <div className="about-hero-overlay">
           <div className="about-hero-content">
-          <h1>Training Programs</h1>
-          <p>
-            Structured learning programs across technical, operational, safety,
-            maintenance, project, and leadership domains for measurable
-            capability development.
-          </p>
+            <h1>Training Programs</h1>
+            <p>
+              Structured learning programs across technical, operational,
+              safety, maintenance, project, and leadership domains for
+              measurable capability development.
+            </p>
           </div>
         </div>
       </section>
@@ -75,13 +75,14 @@ export default function Programs() {
             <img
               src={trainingImage}
               alt="Training program planning and structured delivery"
+              loading="lazy"
             />
           </div>
           <div className="programs-feature-copy">
             <h2 className="head-sec">Program Structure</h2>
             <p>
               Programs are offered as modular training units, typically
-              structured over 3-5 days.
+              structured over 3–5 days.
             </p>
           </div>
         </div>
@@ -91,8 +92,8 @@ export default function Programs() {
             <h2>Program Categories</h2>
           </div>
           <div className="program-categories-grid">
-            {programCategories.map((category) => (
-              <div key={category} className="program-category-card">
+            {programCategories.map((category, index) => (
+              <div key={index} className="program-category-card">
                 {category}
               </div>
             ))}
@@ -104,8 +105,8 @@ export default function Programs() {
             <h2 className="head-sec">Customized Programs</h2>
             <p>Programs can be customized based on:</p>
             <ul className="programs-list">
-              {customizationPoints.map((point) => (
-                <li key={point}>{point}</li>
+              {customizationPoints.map((point, index) => (
+                <li key={index}>{point}</li>
               ))}
             </ul>
           </div>
@@ -113,6 +114,7 @@ export default function Programs() {
             <img
               src={towersImage}
               alt="Customized training programs and participant engagement"
+              loading="lazy"
             />
           </div>
         </section>
@@ -126,8 +128,8 @@ export default function Programs() {
             <article className="programs-method-card">
               <h3 className="head-sec">Approach</h3>
               <ul className="programs-list">
-                {approachPoints.map((point) => (
-                  <li key={point}>{point}</li>
+                {approachPoints.map((point, index) => (
+                  <li key={index}>{point}</li>
                 ))}
               </ul>
             </article>
@@ -135,8 +137,8 @@ export default function Programs() {
             <article className="programs-method-card">
               <h3 className="head-sec">Methods Used</h3>
               <ul className="programs-list">
-                {methodsUsed.map((point) => (
-                  <li key={point}>{point}</li>
+                {methodsUsed.map((point, index) => (
+                  <li key={index}>{point}</li>
                 ))}
               </ul>
             </article>
@@ -150,12 +152,12 @@ export default function Programs() {
                 including:
               </p>
               <ul className="programs-list programs-list-light">
-                {residentialPoints.map((point) => (
-                  <li key={point}>{point}</li>
+                {residentialPoints.map((point, index) => (
+                  <li key={index}>{point}</li>
                 ))}
               </ul>
               <p className="programs-residential-note">
-                This format improves knowledge, retention, and application
+                This format improves knowledge retention and application
                 capability, subject to facility and batch planning.
               </p>
             </div>
@@ -163,6 +165,7 @@ export default function Programs() {
               <img
                 src={residentialImage}
                 alt="Residential learning and immersive group engagement"
+                loading="lazy"
               />
             </div>
           </div>

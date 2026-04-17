@@ -5,6 +5,8 @@ import ImageLightbox from "../components/ImageLightbox";
 import { apiUrl } from "../lib/api";
 import expertsHeroImage from "../assets/images/IMG-20220502-WA0001.jpg";
 
+const fallbackExperts = [];
+
 const domainBlocks = [
   {
     title: "Technical & Engineering Systems",
@@ -72,26 +74,22 @@ const EngagementScope = [
   "Support in program design and development based on domain expertise",
 ];
 
-const capabilityHighlights = [
-  "Programs aligned with operational requirements and industry practices",
-  "Delivery support for government, PSU, utility, and industrial environments",
-  "Modular 3-5 day formats with practical and scenario-based learning",
-  "Focus on measurable outcomes, compliance adherence, and risk reduction",
-];
-
 export default function Experts() {
   const [experts, setExperts] = useState([]);
   const [selectedExpert, setSelectedExpert] = useState(null);
   const [showRegister, setShowRegister] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+
   useEffect(() => {
     async function load() {
       try {
         const res = await fetch(apiUrl("/api/experts"));
         if (!res.ok) throw new Error("Failed to load experts");
+
         const data = await res.json();
-        setExperts(data);
+        setExperts(data || []);
       } catch (e) {
+        console.error("Error loading experts:", e);
         setExperts(fallbackExperts);
       }
     }
@@ -104,11 +102,13 @@ export default function Experts() {
   }
 
   function openPreview(src, alt) {
+    if (!src) return;
     setPreviewImage({ src, alt });
   }
 
   return (
     <main>
+      {/* HERO */}
       <section
         className="about-hero experts-hero-banner"
         style={{
@@ -127,115 +127,98 @@ export default function Experts() {
             <p>
               Experts associated with Voltgrid Insights contribute through
               training delivery, knowledge sharing, and field-oriented
-              engagement, aligned with real operational environments.
+              engagement.
             </p>
           </div>
         </div>
       </section>
 
       <div className="page-main container pt-0">
-      <section className="experts-cta card">
-        <div>
-          <h2 className="head-sec">Join as an Expert</h2>
-          <p>
-            Professionals with relevant industry experience can register to be
-            part of the expert network.
-          </p>
-          <p>
-            Registered profiles are reviewed and, upon approval, featured in the
-            Expert Gallery.
-          </p>
 
-          <button
-            className="btn btn-danger reg-button"
-            onClick={() => openRegister()}
-          >
-            Register as a Expert
-          </button>
-        </div>
-      </section>
+        {/* CTA */}
+        <section className="experts-cta card">
+          <div>
+            <h2 className="head-sec">Join as an Expert</h2>
+            <p>Professionals with relevant industry experience can register.</p>
 
-      <section className="safety-surface mt-5">
-        <div className="section-header safety-subheader">
-          <h2>Who Can Register</h2>
-        </div>
-        <div className="safety-grid justify-content-center">
-          {WhoCanRegister.map((item) => (
-            <div key={item} className="safety-card">
-              {item}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="safety-surface mt-5">
-        <div className="section-header safety-subheader">
-          <h2>Engagement Scope</h2>
-        </div>
-        <div className="safety-grid justify-content-center">
-          {EngagementScope.map((item) => (
-            <div key={item} className="safety-card">
-              {item}
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="section-header experts-section-header">
-        <h2>Expert Profiles</h2>
-        <p>
-          Faculty engagement is structured to support sector-relevant training
-          delivery, practical applicability, and measurable learning outcomes.
-        </p>
-      </section>
-
-      <div className="grid-list experts-grid">
-        {experts.map((ex) => (
-          <div key={ex.id}>
-            <ExpertCard
-              expert={ex}
-              onRegister={openRegister}
-              onPhotoClick={openPreview}
-            />
+            <button
+              className="btn btn-danger reg-button"
+              onClick={() => openRegister()}
+            >
+              Register as Expert
+            </button>
           </div>
-        ))}
-      </div>
+        </section>
 
-      <section className="experts-domains-section">
-        <div className="section-header experts-section-header">
-          <h2>Training Domains Supported</h2>
-          <p>
-            Programs span technical, operational, safety, maintenance, project,
-            regulatory, and leadership areas in line with the approved website
-            content.
-          </p>
-        </div>
-        <div className="experts-domain-grid">
-          {domainBlocks.map((block) => (
-            <article key={block.title} className="experts-domain-card card">
-              <h3>{block.title}</h3>
-              <ul>
-                {block.points.map((point) => (
-                  <li key={point}>{point}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
+        {/* WHO CAN REGISTER */}
+        <section className="safety-surface mt-5">
+          <div className="section-header safety-subheader">
+            <h2>Who Can Register</h2>
+          </div>
 
-      {showRegister && (
-        <RegisterModal
-          expert={selectedExpert}
-          onClose={() => setShowRegister(false)}
-        />
-      )}
-      {previewImage && (
-        <ImageLightbox
-          src={previewImage.src}
-          alt={previewImage.alt}
-          onClose={() => setPreviewImage(null)}
-        />
-      )}
+          <div className="safety-grid">
+            {WhoCanRegister.map((item, i) => (
+              <div key={i} className="safety-card">
+                {item}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* EXPERT LIST */}
+        <section className="section-header experts-section-header">
+          <h2>Expert Profiles</h2>
+        </section>
+
+        <div className="grid-list experts-grid">
+          {experts.length === 0 ? (
+            <p style={{ textAlign: "center" }}>No experts available</p>
+          ) : (
+            experts.map((ex) => (
+              <div key={ex.id || ex._id}>
+                <ExpertCard
+                  expert={ex}
+                  onRegister={openRegister}
+                  onPhotoClick={(src) =>
+                    openPreview(apiUrl(src), ex.name)
+                  }
+                />
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* DOMAINS */}
+        <section className="experts-domains-section">
+          <div className="experts-domain-grid">
+            {domainBlocks.map((block, i) => (
+              <article key={i} className="experts-domain-card card">
+                <h3>{block.title}</h3>
+                <ul>
+                  {block.points.map((point, j) => (
+                    <li key={j}>{point}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* MODALS */}
+        {showRegister && (
+          <RegisterModal
+            expert={selectedExpert}
+            onClose={() => setShowRegister(false)}
+          />
+        )}
+
+        {previewImage && (
+          <ImageLightbox
+            src={previewImage.src}
+            alt={previewImage.alt}
+            onClose={() => setPreviewImage(null)}
+          />
+        )}
       </div>
     </main>
   );
