@@ -215,7 +215,7 @@ export default function Home() {
         </div>
 
         <div className="structure-grid">
-          <div className="structure-card">
+          <div className="structure-card text-center">
             <div className="structure-icon">
               <i className="fas fa-clock"></i>
             </div>
@@ -226,7 +226,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="structure-card">
+          <div className="structure-card text-center">
             <div className="structure-icon">
               <i className="fas fa-layer-group"></i>
             </div>
@@ -238,7 +238,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="structure-card">
+          <div className="structure-card text-center">
             <div className="structure-icon">
               <i className="fas fa-chalkboard-teacher"></i>
             </div>
@@ -251,7 +251,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="structure-card">
+          <div className="structure-card text-center">
             <div className="structure-icon">
               <i className="fas fa-sliders-h"></i>
             </div>

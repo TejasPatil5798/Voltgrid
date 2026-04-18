@@ -1,7 +1,7 @@
 import React from "react";
 import aboutHeroImage from "../assets/images/abt_hero.jpg";
 import overviewImage from "../assets/images/imp.jpg";
-import visionImage from "../assets/images/vision.jpg";
+import visionImage from "../assets/images/vision.JPG";
 import missionImage from "../assets/images/mission.jpg";
 import impactImage from "../assets/images/Impact.jpg";
 
@@ -157,7 +157,7 @@ export default function About() {
           <div className="section-header">
             <h2 className="head-sec">Sector Coverage</h2>
           </div>
-          <div className="formats-grid">
+          <div className="formats-grid sector-coverage-grid">
             <div className="format-card">
               <div className="format-icon">
                 <i className="fas fa-bolt"></i>
@@ -223,22 +223,22 @@ export default function About() {
           <div className="section-header about-subheader">
             <h2>Why Choose Voltgrid Insights</h2>
           </div>
-          <div className="why-grid">
-            <div className="capability-card">
+          <div className="why-grid why-choose-grid">
+            <div className="capability-card text-center">
               Structured and competency-based approach
             </div>
-            <div className="capability-card">
+            <div className="capability-card text-center">
               Programs aligned with operational requirements and industry
               practices
             </div>
-            <div className="capability-card">
+            <div className="capability-card text-center">
               Multi-domain capability across technical, operational, and
               management areas
             </div>
-            <div className="capability-card">
+            <div className="capability-card text-center">
               Flexible delivery formats including residential programs
             </div>
-            <div className="capability-card">
+            <div className="capability-card text-center">
               Focus on practical application and measurable outcomes
             </div>
           </div>

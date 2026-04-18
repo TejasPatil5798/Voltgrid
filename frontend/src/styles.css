@@ -1244,6 +1244,10 @@ textarea {
 	gap: 16px;
 }
 
+.why-choose-grid {
+	grid-template-columns: 1fr;
+}
+
 .why-card {
 	background: #fff;
 	border: 1px solid #dfe8ee;
@@ -1265,6 +1269,10 @@ textarea {
 	border-radius: 8px;
 	color: #33475b;
 	line-height: 1.65;
+}
+
+.sector-coverage-grid {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .about-impact-hero {
@@ -1307,6 +1315,10 @@ textarea {
 		grid-template-columns: 1fr 1fr;
 	}
 
+	.sector-coverage-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
 	.vision-mission-grid {
 		grid-template-columns: 1fr;
 	}
@@ -1321,6 +1333,10 @@ textarea {
 	.about-row,
 	.capability-grid,
 	.why-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.sector-coverage-grid {
 		grid-template-columns: 1fr;
 	}
 
