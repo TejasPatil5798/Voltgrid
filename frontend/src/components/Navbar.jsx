@@ -1,9 +1,16 @@
 import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 
 export default function Navbar(){
   const [menuOpen, setMenuOpen] = React.useState(false)
   const { pathname } = useLocation()
+  const navItems = [
+    { to: '/', label: 'Home' },
+    { to: '/about', label: 'About' },
+    { to: '/programs', label: 'Programs' },
+    { to: '/safety', label: 'Safety' },
+    { to: '/contact', label: 'Contact' },
+  ]
 
   React.useEffect(() => {
     setMenuOpen(false)
@@ -16,8 +23,13 @@ export default function Navbar(){
   return (
     <header className="site-header">
       <div className="brand-block">
-        <div className="logo">Voltgrid Insights</div>
-        <div className="brand-tagline">Power. Precision. Performance.</div>
+        <NavLink to="/" className="brand-link" onClick={() => setMenuOpen(false)}>
+          <span className="brand-mark" aria-hidden="true">VI</span>
+          <span className="brand-copy">
+            <span className="logo">Voltgrid Insights</span>
+            <span className="brand-tagline">Power. Precision. Performance.</span>
+          </span>
+        </NavLink>
       </div>
       
       <button
@@ -34,13 +46,17 @@ export default function Navbar(){
       </button>
 
       <nav id="navMenu" className={"site-nav" + (menuOpen ? " show" : "")}>
-        <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
-        <Link to="/about" onClick={() => setMenuOpen(false)}>About</Link>
-        <Link to="/programs" onClick={() => setMenuOpen(false)}>Programs</Link>
-        <Link to="/safety" onClick={() => setMenuOpen(false)}>Safety</Link>
-        <Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link>
-        {/* <Link to="/experts">Experts</Link> */}
-        {/* <Link to="/admin">Admin</Link> */}
+        {navItems.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.to === '/'}
+            className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
+            onClick={() => setMenuOpen(false)}
+          >
+            {item.label}
+          </NavLink>
+        ))}
       </nav>
     </header>
   )
