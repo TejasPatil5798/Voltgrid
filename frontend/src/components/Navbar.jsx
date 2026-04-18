@@ -42,14 +42,6 @@ export default function Navbar(){
         {/* <Link to="/experts">Experts</Link> */}
         {/* <Link to="/admin">Admin</Link> */}
       </nav>
-      <div className="nav-actions">
-        {/* {authed ? (
-          <button onClick={handleLogout} className="btn btn-danger">Logout</button>
-        ) : (
-          <Link to="/login" className="btn btn-danger">Login</Link>
-        )} */}
-
-      </div>
     </header>
   )
 }

@@ -160,13 +160,13 @@
 .menu-toggle {
 	display: none;
 	position: relative;
-	width: 52px;
-	height: 52px;
+	width: 44px;
+	height: 44px;
 	align-items: center;
 	justify-content: center;
 	padding: 0;
 	border: 1px solid rgba(11, 60, 93, 0.14);
-	border-radius: 16px;
+	border-radius: 14px;
 	background: #ffffff;
 	cursor: pointer;
 	box-shadow: 0 10px 24px rgba(2, 12, 27, 0.08);
@@ -183,7 +183,7 @@
 
 .menu-toggle span {
 	position: absolute;
-	width: 22px;
+	width: 18px;
 	height: 2px;
 	border-radius: 999px;
 	background: #0b3c5d;
@@ -191,15 +191,15 @@
 }
 
 .menu-toggle span:nth-child(1) {
-	top: 18px;
+	top: 15px;
 }
 
 .menu-toggle span:nth-child(2) {
-	top: 25px;
+	top: 21px;
 }
 
 .menu-toggle span:nth-child(3) {
-	top: 32px;
+	top: 27px;
 }
 
 .menu-toggle.is-open {
@@ -212,7 +212,7 @@
 }
 
 .menu-toggle.is-open span:nth-child(1) {
-	top: 25px;
+	top: 21px;
 	transform: rotate(45deg);
 }
 
@@ -222,7 +222,7 @@
 }
 
 .menu-toggle.is-open span:nth-child(3) {
-	top: 25px;
+	top: 21px;
 	transform: rotate(-45deg);
 }
 
@@ -2442,6 +2442,8 @@ header>div:first-child {
 
 	.menu-toggle {
 		display: inline-flex;
+		margin-left: auto;
+		flex: 0 0 auto;
 	}
 
 	.site-nav {
