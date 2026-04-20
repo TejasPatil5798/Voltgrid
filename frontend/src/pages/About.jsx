@@ -1,7 +1,7 @@
 import React from "react";
 import aboutHeroImage from "../assets/images/abt_hero.jpg";
 import overviewImage from "../assets/images/imp.jpg";
-import visionImage from "../assets/images/vision.JPG";
+import visionImage from "../assets/images/vision1.JPG";
 import missionImage from "../assets/images/mission.jpg";
 import impactImage from "../assets/images/Impact.jpg";
 
