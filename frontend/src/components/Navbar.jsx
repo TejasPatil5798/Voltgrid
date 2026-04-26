@@ -10,6 +10,8 @@ export default function Navbar(){
     { to: '/programs', label: 'Programs' },
     { to: '/safety', label: 'Safety' },
     { to: '/contact', label: 'Contact' },
+    { to: '/experts', label: 'Experts' },
+    { to: '/login', label: 'Login' },
   ]
 
   React.useEffect(() => {

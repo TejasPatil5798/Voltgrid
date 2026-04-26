@@ -502,6 +502,22 @@
 		text-align: right;
 	}
 
+	.admin-status-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 38px;
+		padding: 8px 12px;
+		border-radius: 10px;
+		border: 1px solid rgba(31, 122, 140, 0.2);
+		background: rgba(31, 122, 140, 0.12);
+		color: #0d6a49;
+		font-weight: 600;
+		line-height: 1.2;
+		white-space: nowrap;
+		box-sizing: border-box;
+	}
+
 	.admin-card-meta {
 		overflow-wrap: anywhere;
 		word-break: break-word;

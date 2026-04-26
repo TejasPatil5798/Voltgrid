@@ -68,6 +68,7 @@ router.post('/register', async (req, res) => {
       title: body.title,
       yearsExperience: body.yearsExperience,
       domains: Array.isArray(body.domains) ? body.domains : (body.domains ? [body.domains] : []),
+      otherDomain: body.otherDomain,
       keySpecialisation: body.keySpecialisation,
       profileSummary: body.profileSummary,
       profilePhotoUrl: body.profilePhotoUrl,

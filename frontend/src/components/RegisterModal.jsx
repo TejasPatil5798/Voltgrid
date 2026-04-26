@@ -7,6 +7,7 @@ export default function RegisterModal({ expert, onClose }) {
     title: "",
     yearsExperience: '',
     domains: [],
+    otherDomain: '',
     keySpecialisation: '',
     profileSummary: '',
     profilePhotoUrl: '',
@@ -28,6 +29,12 @@ export default function RegisterModal({ expert, onClose }) {
     if (!form.domains || form.domains.length === 0) {
       setStatus("domains-error");
       alert('Please select at least one domain expertise.')
+      return;
+    }
+
+    if (form.domains.includes('Other') && !form.otherDomain.trim()) {
+      setStatus("other-domain-error");
+      alert('Please enter the other domain expertise.')
       return;
     }
 
@@ -63,6 +70,7 @@ export default function RegisterModal({ expert, onClose }) {
   }
 
   function updateField(field, value) {
+    setStatus((prev) => (prev === "domains-error" || prev === "other-domain-error" ? null : prev));
     setForm((prev) => ({
       ...prev,
       [field]: value,
@@ -72,8 +80,14 @@ export default function RegisterModal({ expert, onClose }) {
   function toggleDomain(domain){
     setForm(prev=>{
       const has = Array.isArray(prev.domains) && prev.domains.includes(domain)
-      return { ...prev, domains: has ? prev.domains.filter(d=>d!==domain) : [...(prev.domains||[]), domain] }
+      const nextDomains = has ? prev.domains.filter(d=>d!==domain) : [...(prev.domains||[]), domain]
+      return {
+        ...prev,
+        domains: nextDomains,
+        otherDomain: domain === 'Other' && has ? '' : prev.otherDomain
+      }
     })
+    setStatus((prev) => (prev === "domains-error" || prev === "other-domain-error" ? null : prev));
   }
 
   return (
@@ -121,8 +135,20 @@ export default function RegisterModal({ expert, onClose }) {
               </label>
             ))}
           </div>
+          {form.domains?.includes('Other') && (
+            <input
+              className="form-input"
+              required
+              placeholder="Enter other domain expertise"
+              value={form.otherDomain}
+              onChange={(e) => updateField("otherDomain", e.target.value)}
+            />
+          )}
           {status === 'domains-error' && (
             <p style={{ margin: 0, color: "red" }}>Please select at least one domain expertise.</p>
+          )}
+          {status === 'other-domain-error' && (
+            <p style={{ margin: 0, color: "red" }}>Please enter the other domain expertise.</p>
           )}
 
           <input className="form-input" required placeholder="Key areas of specialisation (2-3 lines)" value={form.keySpecialisation} onChange={e=>updateField('keySpecialisation', e.target.value)} />

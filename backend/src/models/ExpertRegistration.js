@@ -7,6 +7,7 @@ const expertRegistrationSchema = new mongoose.Schema({
   title: { type: String, required: false },
   yearsExperience: { type: Number, required: false },
   domains: { type: [String], required: false },
+  otherDomain: { type: String, required: false },
   keySpecialisation: { type: String, required: false },
   profileSummary: { type: String, required: false },
   profilePhotoUrl: { type: String, required: false },

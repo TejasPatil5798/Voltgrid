@@ -1,11 +1,6 @@
-import React, { useEffect, useState } from "react";
-import ExpertCard from "../components/ExpertCard";
+import React, { useState } from "react";
 import RegisterModal from "../components/RegisterModal";
-import ImageLightbox from "../components/ImageLightbox";
-import { apiUrl } from "../lib/api";
 import expertsHeroImage from "../assets/images/IMG-20220502-WA0001.jpg";
-
-const fallbackExperts = [];
 
 const domainBlocks = [
   {
@@ -67,43 +62,13 @@ const WhoCanRegister = [
   "Professionals with exposure to operations, safety, compliance, or project execution",
 ];
 
-const EngagementScope = [
-  "Participation in training programs",
-  "Contribution to knowledge-sharing initiatives",
-  "Involvement in field-level awareness and capacity-building activities",
-  "Support in program design and development based on domain expertise",
-];
-
 export default function Experts() {
-  const [experts, setExperts] = useState([]);
   const [selectedExpert, setSelectedExpert] = useState(null);
   const [showRegister, setShowRegister] = useState(false);
-  const [previewImage, setPreviewImage] = useState(null);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(apiUrl("/api/experts"));
-        if (!res.ok) throw new Error("Failed to load experts");
-
-        const data = await res.json();
-        setExperts(data || []);
-      } catch (e) {
-        console.error("Error loading experts:", e);
-        setExperts(fallbackExperts);
-      }
-    }
-    load();
-  }, []);
 
   function openRegister(expert = null) {
     setSelectedExpert(expert);
     setShowRegister(true);
-  }
-
-  function openPreview(src, alt) {
-    if (!src) return;
-    setPreviewImage({ src, alt });
   }
 
   return (
@@ -165,29 +130,6 @@ export default function Experts() {
           </div>
         </section>
 
-        {/* EXPERT LIST */}
-        <section className="section-header experts-section-header">
-          <h2>Expert Profiles</h2>
-        </section>
-
-        <div className="grid-list experts-grid">
-          {experts.length === 0 ? (
-            <p style={{ textAlign: "center" }}>No experts available</p>
-          ) : (
-            experts.map((ex) => (
-              <div key={ex.id || ex._id}>
-                <ExpertCard
-                  expert={ex}
-                  onRegister={openRegister}
-                  onPhotoClick={(src) =>
-                    openPreview(apiUrl(src), ex.name)
-                  }
-                />
-              </div>
-            ))
-          )}
-        </div>
-
         {/* DOMAINS */}
         <section className="experts-domains-section">
           <div className="experts-domain-grid">
@@ -209,14 +151,6 @@ export default function Experts() {
           <RegisterModal
             expert={selectedExpert}
             onClose={() => setShowRegister(false)}
-          />
-        )}
-
-        {previewImage && (
-          <ImageLightbox
-            src={previewImage.src}
-            alt={previewImage.alt}
-            onClose={() => setPreviewImage(null)}
           />
         )}
       </div>

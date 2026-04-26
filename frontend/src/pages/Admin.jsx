@@ -59,14 +59,6 @@ const adminActionsStyle = {
   alignItems: 'center',
 }
 
-const approvedBadgeStyle = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  color: 'green',
-  fontWeight: 600,
-  lineHeight: 1.2,
-}
-
 function useFetch(url, token, refreshKey){
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -76,12 +68,11 @@ function useFetch(url, token, refreshKey){
     let aborted = false
     async function load(){
       if(!token) return
-      setLoading(true); setError(null)
+      setLoading(true)
+      setError(null)
       try{
-      const res = await fetch(apiUrl(url), { headers: { Authorization: 'Bearer ' + token } })
-        const text = await res.text()
-        let d = null
-        try{ d = text ? JSON.parse(text) : null }catch(e){ d = null }
+        const res = await fetch(apiUrl(url), { headers: { Authorization: 'Bearer ' + token } })
+        const d = await res.json().catch(() => null)
         if(!res.ok){
           const msg = (d && d.error) || res.statusText || 'Request failed'
           if(!aborted) setError(msg)
@@ -117,7 +108,6 @@ export default function Admin(){
   const [search, setSearch] = useState('')
   const [approvalFilter, setApprovalFilter] = useState('all')
   const [activeFilter, setActiveFilter] = useState('all')
-  const contacts = useFetch('/api/admin/contacts', token, refresh)
   const regs = useFetch('/api/admin/registrations', token, refresh)
 
   async function approve(id){
@@ -203,7 +193,7 @@ export default function Admin(){
 
   return (
     <main className="page-main container">
-      <h2>Admin</h2>
+      <h2>Admin Dashboard</h2>
       
 
       <section style={{marginTop:30}}>
@@ -238,7 +228,7 @@ export default function Admin(){
             <option value="inactive">Inactive</option>
           </select>
         </div>
-        {regs.loading && <div>Loading...</div>}
+        {regs.loading && <div>Loading expert registrations...</div>}
         {regs.error && <div style={{color:'red'}}>{regs.error}</div>}
         {regs.data && regs.data.length===0 && <div>No registrations yet.</div>}
         {regs.data && filteredRegs.length===0 && <div style={{marginTop:12}}>No matching registrations found.</div>}
@@ -264,7 +254,7 @@ export default function Admin(){
                     </div>
                     <div className="admin-card-action">
                       <div style={adminActionsStyle}>
-                        {r.approved ? <span style={approvedBadgeStyle}>Approved</span> : <button onClick={()=>approve(r._id || r.id)} className="btn">Approve</button>}
+                        {r.approved ? <span className="admin-status-badge mt-3">Approved</span> : <button onClick={()=>approve(r._id || r.id)} className="btn">Approve</button>}
                         <button
                           type="button"
                           onClick={() => setActive(r._id || r.id, r.active === false)}
