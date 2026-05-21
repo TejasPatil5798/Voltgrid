@@ -1,4 +1,5 @@
 import React from "react";
+import AboutArVrSection from "../components/AboutArVrSection";
 import aboutHeroImage from "../assets/images/abt_hero.jpg";
 import overviewImage from "../assets/images/imp.jpg";
 import visionImage from "../assets/images/vision1.JPG";
@@ -152,6 +153,8 @@ export default function About() {
             </div>
           </div>
         </div>
+
+        <AboutArVrSection />
 
         <div className="training-formats">
           <div className="section-header">

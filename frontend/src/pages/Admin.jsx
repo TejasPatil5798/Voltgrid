@@ -2,63 +2,6 @@ import React, { useEffect, useState } from 'react'
 import ImageLightbox from '../components/ImageLightbox'
 import { apiUrl } from '../lib/api'
 
-const adminGridStyle = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-  gap: 20,
-  marginTop: 16,
-}
-
-const adminCardStyle = {
-  background: '#fff',
-  border: '1px solid #dfe8ee',
-  borderRadius: 12,
-  padding: 16,
-  boxShadow: '0 8px 20px rgba(2, 12, 27, 0.06)',
-  display: 'grid',
-  gridTemplateColumns: '72px minmax(0, 1fr)',
-  gap: 12,
-  alignItems: 'start',
-}
-
-const adminThumbWrapStyle = {
-  width: 72,
-  display: 'flex',
-  alignItems: 'flex-start',
-  justifyContent: 'center',
-}
-
-const adminThumbStyle = {
-  width: 64,
-  height: 64,
-  objectFit: 'cover',
-  borderRadius: 8,
-  display: 'block',
-  border: '1px solid rgba(2, 12, 27, 0.06)',
-}
-
-const adminBodyStyle = {
-  minWidth: 0,
-  overflowWrap: 'anywhere',
-  wordBreak: 'break-word',
-}
-
-const adminTopStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: 12,
-  flexWrap: 'wrap',
-}
-
-const adminActionsStyle = {
-  display: 'flex',
-  gap: 8,
-  flexWrap: 'wrap',
-  justifyContent: 'flex-end',
-  alignItems: 'center',
-}
-
 function useFetch(url, token, refreshKey){
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -198,18 +141,16 @@ export default function Admin(){
 
       <section style={{marginTop:30}}>
         <h3>Expert Registrations</h3>
-        <div style={{display:'flex', gap:12, flexWrap:'wrap', alignItems:'center', marginTop:12}}>
+        <div className="admin-toolbar">
           <input
-            className="form-input"
-            style={{maxWidth:420, flex:'1 1 320px'}}
+            className="form-input admin-search"
             type="text"
             placeholder="Search by name, email, domain, organization..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <select
-            className="form-input"
-            style={{minWidth:180}}
+            className="form-input admin-filter"
             value={approvalFilter}
             onChange={(e) => setApprovalFilter(e.target.value)}
           >
@@ -218,8 +159,7 @@ export default function Admin(){
             <option value="not-approved">Not Approved</option>
           </select>
           <select
-            className="form-input"
-            style={{minWidth:160}}
+            className="form-input admin-filter"
             value={activeFilter}
             onChange={(e) => setActiveFilter(e.target.value)}
           >
@@ -233,27 +173,27 @@ export default function Admin(){
         {regs.data && regs.data.length===0 && <div>No registrations yet.</div>}
         {regs.data && filteredRegs.length===0 && <div style={{marginTop:12}}>No matching registrations found.</div>}
         {regs.data && filteredRegs.length > 0 && (
-          <div className="admin-experts-grid" style={adminGridStyle}>
+          <div className="admin-experts-grid">
             {filteredRegs.map((r, idx) => (
-              <div key={r._id || r.id || idx} className="expert-card admin-card" style={adminCardStyle}>
-                <div className="expert-card-left" style={adminThumbWrapStyle}>
+              <div key={r._id || r.id || idx} className="expert-card admin-card">
+                <div className="expert-card-left">
                   <button
                     type="button"
                     className="expert-photo-button"
                     onClick={() => setPreviewImage({ src: r.profilePhotoUrl || '/experts/default.jpg', alt: r.name })}
                     aria-label={`Open photo of ${r.name}`}
                   >
-                    <img src={r.profilePhotoUrl || '/experts/default.jpg'} alt={r.name} className="expert-photo" style={adminThumbStyle} />
+                    <img src={r.profilePhotoUrl || '/experts/default.jpg'} alt={r.name} className="expert-photo" />
                   </button>
                 </div>
-                <div className="expert-card-body" style={adminBodyStyle}>
-                  <div className="admin-card-top" style={adminTopStyle}>
+                <div className="expert-card-body">
+                  <div className="admin-card-top">
                     <div>
                       <h4 style={{margin:0}}>{r.name}</h4>
                       <div className="muted">{r.title || ''} {r.yearsExperience ? `· ${r.yearsExperience} yrs` : ''}</div>
                     </div>
                     <div className="admin-card-action">
-                      <div style={adminActionsStyle}>
+                      <div className="admin-actions">
                         {r.approved ? <span className="admin-status-badge mt-3">Approved</span> : <button onClick={()=>approve(r._id || r.id)} className="btn">Approve</button>}
                         <button
                           type="button"

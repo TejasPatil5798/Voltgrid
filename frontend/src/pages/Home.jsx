@@ -37,21 +37,60 @@ export default function Home() {
 
   return (
     <main>
-      <section className="slider">
+      <section className="slider home-hero" aria-label="Featured training highlights">
+        <div className="home-hero-ambient" aria-hidden="true">
+          <span className="home-hero-shine" />
+          <span className="home-hero-grid" />
+        </div>
+
         {slides.map((s, i) => (
           <div
             key={i}
             className={"slide" + (i === current ? " active" : "")}
+            aria-hidden={i !== current}
           >
             <img src={s.src} alt={s.alt} loading={i === 0 ? "eager" : "lazy"} />
-            <div className="overlay">
-              <h1 style={{ color: "white" }}>
-                Capacity Building and Professional Training Across <br />
-                Technical, Operational, and Management Domains
-              </h1>
-            </div>
+            <span className="slide-scrim" aria-hidden="true" />
+            {i === current && (
+              <div className="overlay">
+                <span className="home-hero-eyebrow home-hero-reveal">
+                  Voltgrid Insights
+                </span>
+                <h1 key={`title-${current}`} className="hero-slide-title home-hero-reveal home-hero-reveal-delay">
+                  Capacity Building and Professional Training Across Technical,
+                  Operational, and Management Domains
+                </h1>
+                <p key={`lead-${current}`} className="home-hero-lead home-hero-reveal home-hero-reveal-delay-2">
+                  Structured programs for technical excellence, operational performance,
+                  and leadership capability.
+                </p>
+              </div>
+            )}
           </div>
         ))}
+
+        <div className="home-hero-ui">
+          <div className="home-hero-dots" role="tablist" aria-label="Carousel slides">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                role="tab"
+                aria-selected={i === current}
+                aria-label={`Go to slide ${i + 1}`}
+                className={"home-hero-dot" + (i === current ? " is-active" : "")}
+                onClick={() => setCurrent(i)}
+              />
+            ))}
+          </div>
+          <div className="home-hero-progress" aria-hidden="true">
+            <span key={current} className="home-hero-progress-bar" />
+          </div>
+        </div>
+
+        <span className="home-hero-scroll" aria-hidden="true">
+          <i className="fas fa-chevron-down" />
+        </span>
       </section>
 
       <section className="features">

@@ -1,4 +1,5 @@
 import React from "react";
+import ProgramsArVrSection from "../components/ProgramsArVrSection";
 import programsHeroImage from "../assets/images/IMG-20220502-WA0001.jpg";
 import trainingImage from "../assets/images/training.jpg";
 import towersImage from "../assets/images/towers.jpg";
@@ -99,6 +100,8 @@ export default function Programs() {
             ))}
           </div>
         </section>
+
+        <ProgramsArVrSection />
 
         <section className="programs-feature-card programs-feature-card-reverse">
           <div className="programs-feature-copy">
