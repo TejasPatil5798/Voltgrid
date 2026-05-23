@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import RevealSection, { Reveal } from "../components/RevealSection";
 import RegisterModal from "../components/RegisterModal";
 import expertsHeroImage from "../assets/images/IMG-20220502-WA0001.jpg";
 
@@ -72,8 +73,7 @@ export default function Experts() {
   }
 
   return (
-    <main>
-      {/* HERO */}
+    <main className="experts-page-main">
       <section
         className="about-hero experts-hero-banner"
         style={{
@@ -98,62 +98,82 @@ export default function Experts() {
         </div>
       </section>
 
-      <div className="page-main container pt-0">
-
-        {/* CTA */}
-        <section className="experts-cta card">
-          <div>
-            <h2 className="head-sec">Join as an Expert</h2>
-            <p>Professionals with relevant industry experience can register.</p>
-
+      <div className="experts-page experts-page--reveal">
+        <RevealSection
+          className="experts-reveal-cta"
+          ariaLabel="Join as an expert"
+          eyebrow="Collaborate"
+          title="Join as an Expert"
+          description="Professionals with relevant industry experience can register to contribute through training delivery, knowledge sharing, and field-oriented engagement."
+          compactHeader
+        >
+          <Reveal className="experts-cta card" delay="0.36s">
             <button
+              type="button"
               className="btn btn-danger reg-button"
               onClick={() => openRegister()}
             >
               Register as Expert
             </button>
-          </div>
-        </section>
+          </Reveal>
+        </RevealSection>
 
-        {/* WHO CAN REGISTER */}
-        <section className="safety-surface mt-5">
-          <div className="section-header safety-subheader">
-            <h2>Who Can Register</h2>
-          </div>
-
-          <div className="safety-grid">
-            {WhoCanRegister.map((item, i) => (
-              <div key={i} className="safety-card">
+        <RevealSection
+          className="experts-reveal-who"
+          ariaLabel="Who can register"
+          eyebrow="Eligibility"
+          title="Who Can Register"
+          description="Open to practitioners and subject matter experts across technical, operational, and compliance-focused domains."
+          compactHeader
+        >
+          <div className="safety-grid experts-who-grid">
+            {WhoCanRegister.map((item, index) => (
+              <Reveal
+                key={item}
+                as="div"
+                className="safety-card"
+                delay={`${0.34 + index * 0.08}s`}
+              >
                 {item}
-              </div>
+              </Reveal>
             ))}
           </div>
-        </section>
+        </RevealSection>
 
-        {/* DOMAINS */}
-        <section className="experts-domains-section">
+        <RevealSection
+          className="experts-reveal-domains"
+          ariaLabel="Expertise domains"
+          eyebrow="Domains"
+          title="Areas of Expertise"
+          description="Contribute across the program areas where your industry experience aligns with Voltgrid Insights capability-building initiatives."
+          compactHeader
+        >
           <div className="experts-domain-grid">
-            {domainBlocks.map((block, i) => (
-              <article key={i} className="experts-domain-card card">
+            {domainBlocks.map((block, index) => (
+              <Reveal
+                key={block.title}
+                as="article"
+                className="experts-domain-card card"
+                delay={`${0.34 + index * 0.06}s`}
+              >
                 <h3>{block.title}</h3>
                 <ul>
-                  {block.points.map((point, j) => (
-                    <li key={j}>{point}</li>
+                  {block.points.map((point) => (
+                    <li key={point}>{point}</li>
                   ))}
                 </ul>
-              </article>
+              </Reveal>
             ))}
           </div>
-        </section>
-
-        {/* MODALS */}
-        {showRegister && (
-          <RegisterModal
-            expert={selectedExpert}
-            onClose={() => setShowRegister(false)}
-          />
-        )}
+        </RevealSection>
       </div>
+
+      {showRegister && (
+        <RegisterModal
+          expert={selectedExpert}
+          onClose={() => setShowRegister(false)}
+        />
+      )}
     </main>
   );
 }

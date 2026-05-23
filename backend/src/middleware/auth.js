@@ -3,33 +3,67 @@ const User = require('../models/User')
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret'
 
-async function requireAuth(req, res, next){
+function resolveRole(user) {
+  if (!user) return null
+  if (user.isAdmin || user.role === 'admin') return 'admin'
+  if (user.role === 'student') return 'learner'
+  if (user.role && User.ROLES.includes(user.role)) return user.role
+  return 'learner'
+}
+
+async function requireAuth(req, res, next) {
   const auth = req.headers.authorization || req.headers['x-access-token']
-  if(!auth) return res.status(401).json({ error: 'No token provided' })
+  if (!auth) return res.status(401).json({ error: 'No token provided' })
   const token = auth.startsWith('Bearer ') ? auth.slice(7) : auth
-  try{
+  try {
     const payload = jwt.verify(token, JWT_SECRET)
     req.user = payload
     next()
-  }catch(err){
+  } catch (err) {
     return res.status(401).json({ error: 'Invalid token' })
   }
 }
 
-// require both valid token and isAdmin=true in database
-async function requireAdmin(req, res, next){
-  try{
-    await requireAuth(req, res, async ()=>{})
+async function loadUserFromToken(req, res, next) {
+  try {
+    await requireAuth(req, res, async () => {})
     const id = req.user && req.user.id
-    if(!id) return res.status(401).json({ error: 'Invalid token payload' })
+    if (!id) return res.status(401).json({ error: 'Invalid token payload' })
     const u = await User.findById(id).lean()
-    if(!u || !u.isAdmin) return res.status(403).json({ error: 'Admin required' })
-    req.user = { id: u._id.toString(), email: u.email, name: u.name }
+    if (!u) return res.status(401).json({ error: 'User not found' })
+    const role = resolveRole(u)
+    req.user = { id: u._id.toString(), email: u.email, name: u.name, role }
     next()
-  }catch(err){
-    console.error('requireAdmin error', err)
+  } catch (err) {
+    console.error('loadUserFromToken error', err)
     return res.status(500).json({ error: 'Authorization failed' })
   }
 }
 
-module.exports = { requireAuth, requireAdmin }
+function requireRole(...allowedRoles) {
+  return (req, res, next) => {
+    loadUserFromToken(req, res, () => {
+      if (!req.user?.role || !allowedRoles.includes(req.user.role)) {
+        const isLearner = req.user?.role === 'learner'
+        const tutorOnly = allowedRoles.includes('tutor') && !allowedRoles.includes('learner')
+        if (isLearner && tutorOnly) {
+          return res.status(403).json({
+            error: 'Students cannot create or edit courses, batches, or other tutor resources.',
+          })
+        }
+        return res.status(403).json({ error: 'Insufficient permissions' })
+      }
+      next()
+    })
+  }
+}
+
+const requireAdmin = requireRole('admin')
+
+module.exports = {
+  requireAuth,
+  requireAdmin,
+  requireRole,
+  loadUserFromToken,
+  resolveRole,
+}

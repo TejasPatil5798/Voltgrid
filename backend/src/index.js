@@ -22,6 +22,8 @@ app.use('/api/contact', require('./routes/contact'))
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/experts', require('./routes/experts'))
 app.use('/api/admin', require('./routes/admin'))
+app.use('/api/tutor', require('./routes/tutor'))
+app.use('/api/learner', require('./routes/learner'))
 
 // Connect to MongoDB
 async function start() {
@@ -32,8 +34,28 @@ async function start() {
     } else {
         try {
             await mongoose.connect(MONGODB_URI)
+            console.log('MongoDB connected')
+            if (process.env.SEED_DEMO_USERS !== 'false') {
+                try {
+                    const { seedDemoUsers, DEMO_PASS } = require('./lib/seedDemoUsers')
+                    const results = await seedDemoUsers()
+                    console.log('Demo users ready (password: ' + DEMO_PASS + ')')
+                    for (const r of results) console.log('  -', r.email, '(' + r.role + ')')
+                } catch (seedErr) {
+                    console.error('Demo user seed failed:', seedErr.message)
+                }
+                try {
+                    const { seedTutorDemo } = require('./lib/seedTutorDemo')
+                    const tutorSeed = await seedTutorDemo()
+                    if (tutorSeed.seeded) {
+                        console.log('Tutor demo data seeded (' + tutorSeed.courses + ' courses)')
+                    }
+                } catch (seedErr) {
+                    console.error('Tutor demo seed failed:', seedErr.message)
+                }
+            }
         } catch (err) {
-            console.error('MongoDB connection failed - continuing with file-based fallbacks', err)
+            console.error('MongoDB connection failed — login and user features will not work', err.message)
         }
     }
 

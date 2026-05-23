@@ -1,9 +1,12 @@
 import React from "react";
 import ProgramsArVrSection from "../components/ProgramsArVrSection";
+import RevealSection, { Reveal } from "../components/RevealSection";
 import programsHeroImage from "../assets/images/IMG-20220502-WA0001.jpg";
 import trainingImage from "../assets/images/training.jpg";
 import towersImage from "../assets/images/towers.jpg";
 import residentialImage from "../assets/images/pexels-pavel-danilyuk-8761523.jpg";
+import programVideo from "../assets/videos/Futuristic_education_VR_training_202605221306.mp4";
+import immersiveLearningVideo from "../assets/videos/Untitled video.mp4";
 
 const programCategories = [
   "Technical & Engineering Systems",
@@ -42,7 +45,7 @@ const residentialPoints = [
 
 export default function Programs() {
   return (
-    <main>
+    <main className="programs-page-main">
       <section
         className="about-hero"
         style={{
@@ -61,102 +64,169 @@ export default function Programs() {
         </div>
       </section>
 
-      <section id="training-programs" className="programs-page">
-        <div className="section-header programs-header">
-          <h2>TRAINING PROGRAMS</h2>
-          <p>
-            Programs are delivered through a modular and structured framework
-            that supports practical learning, customization, and operational
-            relevance.
-          </p>
-        </div>
+      <div id="training-programs" className="programs-page programs-page--reveal">
+        <RevealSection
+          className="programs-reveal-intro"
+          ariaLabel="Training programs overview"
+          eyebrow="Learning paths"
+          title="Training Programs"
+          description="Programs are delivered through a modular and structured framework that supports practical learning, customization, and operational relevance."
+          compactHeader
+        >
+          <div className="programs-feature-card">
+            <Reveal className="programs-feature-media reveal-item--from-left" delay="0.36s">
+              <img
+                src={trainingImage}
+                alt="Training program planning and structured delivery"
+                loading="lazy"
+              />
+            </Reveal>
+            <div className="programs-feature-copy">
+              <Reveal as="h3" className="head-sec text-center" delay="0.42s">
+                Program Structure
+              </Reveal>
+              <Reveal as="p" delay="0.5s">
+                Programs are offered as modular training units, typically
+                structured over 3–5 days.
+              </Reveal>
+            </div>
+          </div>
+        </RevealSection>
 
-        <div className="programs-feature-card">
-          <div className="programs-feature-media">
-            <img
-              src={trainingImage}
-              alt="Training program planning and structured delivery"
-              loading="lazy"
-            />
-          </div>
-          <div className="programs-feature-copy">
-            <h2 className="head-sec">Program Structure</h2>
-            <p>
-              Programs are offered as modular training units, typically
-              structured over 3–5 days.
-            </p>
-          </div>
-        </div>
-
-        <section className="programs-surface">
-          <div className="section-header programs-subheader">
-            <h2>Program Categories</h2>
-          </div>
+        <RevealSection
+          className="programs-reveal-categories"
+          ariaLabel="Program categories"
+          eyebrow="Domains"
+          title="Program Categories"
+          compactHeader
+        >
           <div className="program-categories-grid">
             {programCategories.map((category, index) => (
-              <div key={index} className="program-category-card">
+              <Reveal
+                key={category}
+                as="div"
+                className="program-category-card"
+                delay={`${0.34 + index * 0.07}s`}
+              >
                 {category}
-              </div>
+              </Reveal>
             ))}
           </div>
-        </section>
+        </RevealSection>
+      </div>
 
-        <ProgramsArVrSection />
-
-        <section className="programs-feature-card programs-feature-card-reverse">
-          <div className="programs-feature-copy">
-            <h2 className="head-sec">Customized Programs</h2>
-            <p>Programs can be customized based on:</p>
-            <ul className="programs-list">
-              {customizationPoints.map((point, index) => (
-                <li key={index}>{point}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="programs-feature-media">
-            <img
-              src={towersImage}
-              alt="Customized training programs and participant engagement"
-              loading="lazy"
+      <RevealSection
+        className="programs-reveal-video"
+        ariaLabel="Immersive training preview"
+        noCard
+      >
+        <Reveal delay="0.08s">
+          <section className="program-video-section">
+            <video
+              className="program-video"
+              src={programVideo}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
             />
-          </div>
-        </section>
+          </section>
+        </Reveal>
+      </RevealSection>
 
-        <section className="programs-methodology-section">
-          <div className="section-header programs-header">
-            <h2>TRAINING METHODOLOGY</h2>
-          </div>
+      <div className="programs-arvr-wrap">
+        <ProgramsArVrSection />
+      </div>
 
+      <RevealSection
+        className="programs-reveal-video programs-reveal-video--secondary"
+        ariaLabel="Immersive learning preview"
+        noCard
+      >
+        <Reveal delay="0.08s">
+          <section className="program-video-section">
+            <video
+              className="program-video"
+              src={immersiveLearningVideo}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+            />
+          </section>
+        </Reveal>
+      </RevealSection>
+
+      <div className="programs-page programs-page--reveal">
+        <RevealSection
+          className="programs-reveal-custom"
+          ariaLabel="Customized programs"
+          eyebrow="Tailored delivery"
+          title="Customized Programs"
+          description="Programs can be adapted to your sector, roles, and operational context."
+          compactHeader
+        >
+          <div className="programs-feature-card programs-feature-card-reverse">
+            <div className="programs-feature-copy">
+              <Reveal as="p" delay="0.36s">
+                Programs can be customized based on:
+              </Reveal>
+              <Reveal as="ul" className="programs-list" delay="0.44s">
+                {customizationPoints.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </Reveal>
+            </div>
+            <Reveal className="programs-feature-media reveal-item--from-left" delay="0.4s">
+              <img
+                src={towersImage}
+                alt="Customized training programs and participant engagement"
+                loading="lazy"
+              />
+            </Reveal>
+          </div>
+        </RevealSection>
+
+        <RevealSection
+          className="programs-reveal-methodology"
+          ariaLabel="Training methodology"
+          eyebrow="How we teach"
+          title="Training Methodology"
+          description="Structured approach, proven methods, and immersive residential learning where applicable."
+          compactHeader
+        >
           <div className="programs-methodology-grid">
-            <article className="programs-method-card">
-              <h3 className="head-sec">Approach</h3>
+            <Reveal as="article" className="programs-method-card" delay="0.36s">
+              <h3 className="head-sec text-center">Approach</h3>
               <ul className="programs-list">
-                {approachPoints.map((point, index) => (
-                  <li key={index}>{point}</li>
+                {approachPoints.map((point) => (
+                  <li key={point}>{point}</li>
                 ))}
               </ul>
-            </article>
+            </Reveal>
 
-            <article className="programs-method-card">
-              <h3 className="head-sec">Methods Used</h3>
+            <Reveal as="article" className="programs-method-card" delay="0.46s">
+              <h3 className="head-sec text-center">Methods Used</h3>
               <ul className="programs-list">
-                {methodsUsed.map((point, index) => (
-                  <li key={index}>{point}</li>
+                {methodsUsed.map((point) => (
+                  <li key={point}>{point}</li>
                 ))}
               </ul>
-            </article>
+            </Reveal>
           </div>
 
-          <div className="programs-residential-panel">
+          <Reveal className="programs-residential-panel" delay="0.56s">
             <div className="programs-residential-copy">
-              <h3>Residential Learning Model</h3>
+              <h3 className="text-center">Residential Learning Model</h3>
               <p>
                 Residential programs follow an immersive learning approach,
                 including:
               </p>
               <ul className="programs-list programs-list-light">
-                {residentialPoints.map((point, index) => (
-                  <li key={index}>{point}</li>
+                {residentialPoints.map((point) => (
+                  <li key={point}>{point}</li>
                 ))}
               </ul>
               <p className="programs-residential-note">
@@ -171,9 +241,9 @@ export default function Programs() {
                 loading="lazy"
               />
             </div>
-          </div>
-        </section>
-      </section>
+          </Reveal>
+        </RevealSection>
+      </div>
     </main>
   );
 }

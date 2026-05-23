@@ -1,11 +1,9 @@
 import React from "react";
+import RevealSection, { Reveal } from "../components/RevealSection";
 import safetyHeroImage from "../assets/images/safety-hero.png";
 import safetyCoverageImage from "../assets/images/gettyimages-1166085429-612x612.jpg";
 import safetyOutcomeImage from "../assets/images/gettyimages-1179434300-612x612.jpg";
 import safetyAlignmentImage from "../assets/images/gettyimages-1301243910-612x612.jpg";
-import safetyProgramImage from "../assets/images/gettyimages-661805558-612x612.jpg";
-import safetyCustomImage from "../assets/images/towers.jpg";
-import safetyResidentialImage from "../assets/images/IMG_20220425_101407.jpg.jpeg";
 
 const safetyCoverage = [
   "Workplace safety systems",
@@ -40,57 +38,9 @@ const flexibilityPoints = [
   { label: "Public Sector Organizations", icon: "fas fa-landmark" },
 ];
 
-const impactIndicators = [
-  "Number of programs delivered",
-  "Participant coverage",
-  "Sector diversity",
-];
-
-const impactAreas = [
-  "Operational efficiency improvement",
-  "Compliance adherence",
-  "Risk reduction",
-  "Skill and capability enhancement",
-];
-
-const programCategories = [
-  "Technical & Engineering Systems",
-  "Operations & Control Systems",
-  "Safety & Compliance",
-  "Asset & Maintenance Management",
-  "Project & Contract Management",
-  "Regulatory, Financial & Leadership Development",
-];
-
-const customizationPoints = [
-  "Sector requirements",
-  "Participant roles and experience levels",
-  "Specific operational challenges",
-];
-
-const methodologyApproach = [
-  "Modular and structured delivery",
-  "Outcome-focused training design",
-  "Sector-adaptable content",
-];
-
-const methodsUsed = [
-  "Technical sessions",
-  "Case studies",
-  "Simulation-based learning (including VR/AR where applicable)",
-  "Scenario-based exercises",
-];
-
-const residentialPoints = [
-  "Continuous faculty interaction",
-  "Extended learning sessions",
-  "Group-based exercises and discussions",
-  "Practical and scenario-based engagement",
-];
-
 export default function Safety() {
   return (
-    <main>
+    <main className="safety-page-main">
       <section
         className="about-hero"
         style={{
@@ -110,90 +60,129 @@ export default function Safety() {
         </div>
       </section>
 
-      <section className="safety-page">
-        <div className="safety-feature-card">
-          <div className="safety-feature-media">
-            <img
-              src={safetyCoverageImage}
-              alt="Safety training and workplace compliance"
-            />
-          </div>
-          <div className="safety-feature-copy">
-            <h2 className="head-sec">Coverage</h2>
-            <ul className="safety-list">
-              {safetyCoverage.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <section className="safety-surface">
-          <div className="section-header safety-subheader">
-            <h2>Training Approach</h2>
-          </div>
-          <div className="safety-grid">
-            {safetyApproach.map((item) => (
-              <div key={item} className="safety-card">
-                {item}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <div className="safety-feature-card safety-feature-card-reverse">
-          <div className="safety-feature-copy">
-            <h2 className="head-sec">Outcome</h2>
-            <ul className="safety-list">
-              {safetyOutcomes.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="safety-feature-media">
-            <img
-              src={safetyOutcomeImage}
-              alt="Improved safety outcomes and organizational readiness"
-            />
-          </div>
-        </div>
-
-        <section className="safety-surface">
-          <div className="section-header safety-subheader">
-            <h2>Industry Alignment</h2>
-          </div>
-
-          <div className="safety-feature-card safety-feature-card-plain">
-            <div className="safety-feature-media">
+      <div className="safety-page safety-page--reveal">
+        <RevealSection
+          className="safety-reveal-coverage"
+          ariaLabel="Safety coverage"
+          eyebrow="Scope"
+          title="Coverage"
+          description="Comprehensive safety and compliance training across workplace systems, hazards, permits, and incident response."
+          compactHeader
+        >
+          <div className="safety-feature-card">
+            <Reveal className="safety-feature-media reveal-item--from-left" delay="0.36s">
               <img
-                src={safetyAlignmentImage}
-                alt="Industry alignment and compliance frameworks"
+                src={safetyCoverageImage}
+                alt="Safety training and workplace compliance"
+                loading="lazy"
               />
-            </div>
+            </Reveal>
             <div className="safety-feature-copy">
-              <h2 className="head-sec">Approach</h2>
-              <p>Programs are aligned with:</p>
               <ul className="safety-list">
-                {alignmentPoints.map((item) => (
-                  <li key={item}>{item}</li>
+                {safetyCoverage.map((item, index) => (
+                  <Reveal as="li" key={item} delay={`${0.42 + index * 0.06}s`}>
+                    {item}
+                  </Reveal>
                 ))}
               </ul>
             </div>
           </div>
+        </RevealSection>
 
-          <div className="safety-flex-grid mt-4">
-            {flexibilityPoints.map((item) => (
-              <div key={item.label} className="safety-flex-card">
-                <div className="safety-flex-icon">
-                  <i className={item.icon}></i>
-                </div>
-                <div>{item.label}</div>
-              </div>
+        <RevealSection
+          className="safety-reveal-approach"
+          ariaLabel="Training approach"
+          eyebrow="Method"
+          title="Training Approach"
+          compactHeader
+        >
+          <div className="safety-grid">
+            {safetyApproach.map((item, index) => (
+              <Reveal
+                key={item}
+                as="div"
+                className="safety-card"
+                delay={`${0.34 + index * 0.08}s`}
+              >
+                {item}
+              </Reveal>
             ))}
           </div>
-        </section>
+        </RevealSection>
 
-      </section>
+        <RevealSection
+          className="safety-reveal-outcome"
+          ariaLabel="Safety outcomes"
+          eyebrow="Results"
+          title="Outcome"
+          description="Measurable improvements in compliance, risk reduction, and safety culture."
+          compactHeader
+        >
+          <div className="safety-feature-card safety-feature-card-reverse">
+            <div className="safety-feature-copy">
+              <ul className="safety-list">
+                {safetyOutcomes.map((item, index) => (
+                  <Reveal as="li" key={item} delay={`${0.36 + index * 0.08}s`}>
+                    {item}
+                  </Reveal>
+                ))}
+              </ul>
+            </div>
+            <Reveal className="safety-feature-media reveal-item--from-left" delay="0.4s">
+              <img
+                src={safetyOutcomeImage}
+                alt="Improved safety outcomes and organizational readiness"
+                loading="lazy"
+              />
+            </Reveal>
+          </div>
+        </RevealSection>
+
+        <RevealSection
+          className="safety-reveal-alignment"
+          ariaLabel="Industry alignment"
+          eyebrow="Standards"
+          title="Industry Alignment"
+          description="Programs aligned with regulatory frameworks, industry practice, and your operational context."
+          compactHeader
+        >
+          <div className="safety-feature-card safety-feature-card-plain">
+            <Reveal className="safety-feature-media reveal-item--from-left" delay="0.36s">
+              <img
+                src={safetyAlignmentImage}
+                alt="Industry alignment and compliance frameworks"
+                loading="lazy"
+              />
+            </Reveal>
+            <div className="safety-feature-copy">
+              <Reveal as="p" delay="0.42s">
+                Programs are aligned with:
+              </Reveal>
+              <Reveal as="ul" className="safety-list" delay="0.48s">
+                {alignmentPoints.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </Reveal>
+            </div>
+          </div>
+
+          <div className="safety-flex-grid">
+            {flexibilityPoints.map((item, index) => (
+              <Reveal
+                key={item.label}
+                as="div"
+                className="safety-flex-card"
+                delay={`${0.56 + index * 0.08}s`}
+              >
+                <div className="safety-flex-icon">
+                  <i className={item.icon} aria-hidden="true"></i>
+                </div>
+                <div>{item.label}</div>
+              </Reveal>
+            ))}
+          </div>
+        </RevealSection>
+      </div>
     </main>
   );
 }

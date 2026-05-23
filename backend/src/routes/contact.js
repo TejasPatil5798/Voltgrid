@@ -6,7 +6,6 @@ const nodemailer = require('nodemailer')
 const Contact = require('../models/Contact')
 const router = express.Router()
 
-// Ensure data directory exists for fallback storage
 const dataDir = path.join(__dirname, '..', '..', 'data')
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
 const contactsFile = path.join(dataDir, 'contacts.json')
@@ -63,37 +62,64 @@ async function sendContactEmail({ name, email, subject, message }) {
   }
 }
 
+async function saveContactEntry(entry) {
+  if (mongoose.connection.readyState === 1) {
+    const c = new Contact(entry)
+    await c.save()
+    return { stored: 'mongodb' }
+  }
+
+  const fileEntry = {
+    ...entry,
+    createdAt: entry.createdAt || new Date().toISOString(),
+  }
+  let list = []
+  if (fs.existsSync(contactsFile)) {
+    try {
+      list = JSON.parse(fs.readFileSync(contactsFile, 'utf8') || '[]')
+    } catch {
+      list = []
+    }
+  }
+  list.push(fileEntry)
+  fs.writeFileSync(contactsFile, JSON.stringify(list, null, 2))
+  return { stored: 'file', path: contactsFile }
+}
+
+router.post('/google', async (req, res) => {
+  try {
+    const entry = {
+      name: '(Google Form)',
+      email: 'google-form@voltgrid.local',
+      subject: 'Contact Us',
+      message: 'Submitted via embedded Google Form on the Contact page.',
+      source: 'google_form',
+    }
+    const result = await saveContactEntry(entry)
+    return res.json({ success: true, ...result })
+  } catch (err) {
+    console.error('google contact track error', err)
+    res.status(500).json({ error: 'Failed to record contact submission' })
+  }
+})
+
 router.post('/', async (req, res) => {
-  try{
+  try {
     const { name, email, message } = req.body
     const subject = (req.body.subject || '').trim()
-    if(!name || !email || !message) return res.status(400).json({ error: 'Missing fields' })
+    if (!name || !email || !message) return res.status(400).json({ error: 'Missing fields' })
 
-    // If mongoose is connected, persist to MongoDB
-    if (mongoose.connection.readyState === 1) {
-      const c = new Contact({ name, email, subject, message })
-      await c.save()
-      const mailResult = await sendContactEmail({ name, email, subject, message })
-      if (!mailResult.emailed) {
-        return res.status(500).json({ success: false, stored: 'mongodb', emailed: false, error: mailResult.error })
-      }
-      return res.json({ success: true, stored: 'mongodb', emailed: true })
-    }
-
-    // Fallback: append to local JSON file
-    const entry = { name, email, subject, message, createdAt: new Date().toISOString() }
-    let list = []
-    if (fs.existsSync(contactsFile)) {
-      try { list = JSON.parse(fs.readFileSync(contactsFile,'utf8')||'[]') } catch(e){ list = [] }
-    }
-    list.push(entry)
-    fs.writeFileSync(contactsFile, JSON.stringify(list, null, 2))
+    const entry = { name, email, subject, message, source: 'website' }
+    const saveResult = await saveContactEntry(entry)
     const mailResult = await sendContactEmail({ name, email, subject, message })
-    if (!mailResult.emailed) {
-      return res.status(500).json({ success: false, stored: 'file', emailed: false, path: contactsFile, error: mailResult.error })
-    }
-    return res.json({ success: true, stored: 'file', emailed: true, path: contactsFile })
-  }catch(err){
+
+    return res.json({
+      success: true,
+      stored: saveResult.stored,
+      emailed: mailResult.emailed,
+      emailError: mailResult.emailed ? undefined : mailResult.error,
+    })
+  } catch (err) {
     console.error('contact save error', err)
     res.status(500).json({ error: 'Failed to process contact request' })
   }

@@ -4,6 +4,7 @@ import carousel2 from "../assets/images/crousal2.jpg";
 import carousel3 from "../assets/images/crousal3.jpg";
 import carousel4 from "../assets/images/crousal4.png";
 import trainingImg from "../assets/images/training.jpg";
+import RevealSection, { Reveal } from "../components/RevealSection";
 
 export default function Home() {
   const slides = [
@@ -36,7 +37,7 @@ export default function Home() {
   }, [slides.length]);
 
   return (
-    <main>
+    <main className="home-page">
       <section className="slider home-hero" aria-label="Featured training highlights">
         <div className="home-hero-ambient" aria-hidden="true">
           <span className="home-hero-shine" />
@@ -93,256 +94,251 @@ export default function Home() {
         </span>
       </section>
 
-      <section className="features">
-        <div className="card">
-          <i className="fas fa-cogs"></i>
-          <h3>Technical Systems</h3>
-          <p>Infrastructure and engineering operations.</p>
-        </div>
+      <RevealSection
+        className="features"
+        ariaLabel="Core training areas"
+        eyebrow="Core capabilities"
+        title="Built for technical, safety, and leadership excellence"
+        compactHeader
+      >
+        <div className="features-grid">
+          <Reveal as="div" className="card" delay="0.38s">
+            <i className="fas fa-cogs"></i>
+            <h3>Technical Systems</h3>
+            <p>Infrastructure and engineering operations.</p>
+          </Reveal>
 
-        <div className="card">
-          <i className="fas fa-shield-alt"></i>
-          <h3>Safety Training</h3>
-          <p>Hazard control and compliance frameworks.</p>
-        </div>
+          <Reveal as="div" className="card" delay="0.48s">
+            <i className="fas fa-shield-alt"></i>
+            <h3>Safety Training</h3>
+            <p>Hazard control and compliance frameworks.</p>
+          </Reveal>
 
-        <div className="card">
-          <i className="fas fa-chart-line"></i>
-          <h3>Leadership</h3>
-          <p>Management and decision capability.</p>
+          <Reveal as="div" className="card" delay="0.58s">
+            <i className="fas fa-chart-line"></i>
+            <h3>Leadership</h3>
+            <p>Management and decision capability.</p>
+          </Reveal>
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="institution-section">
+      <RevealSection
+        className="institution-section"
+        ariaLabel="What we deliver"
+        eyebrow="Institutional training"
+        title="What We Deliver"
+        headerTone="dark"
+        compactHeader
+      >
         <div className="institution-container">
-          <div className="institution-image">
+          <Reveal className="institution-image reveal-item--from-left" delay="0.36s">
             <img src={trainingImg} alt="Institutional Training" />
-          </div>
+          </Reveal>
           <div className="institution-content">
-            <h2 className="head-sec">What We Deliver</h2>
-            <p>
+            <Reveal as="p" delay="0.44s">
               Voltgrid Insights delivers structured training and
               capability-building programs designed to enhance technical
               competency, operational performance, safety compliance, and
               managerial effectiveness across multiple sectors.
-            </p>
-            <p>
+            </Reveal>
+            <Reveal as="p" delay="0.54s">
               Programs are developed based on operational requirements,
               regulatory frameworks, and industry practices, ensuring relevance
               and practical applicability in real working environments.
-            </p>
+            </Reveal>
           </div>
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="program-domains">
-        <div className="section-header">
-          <h2>Program Domains</h2>
-          <p>
-            Structured professional training programs designed across technical,
-            operational, compliance, and leadership domains for industry-ready
-            capacity building.
-          </p>
-        </div>
-
+      <RevealSection
+        className="program-domains"
+        ariaLabel="Program domains"
+        eyebrow="Training scope"
+        title="Program Domains"
+        description="Structured professional training programs designed across technical, operational, compliance, and leadership domains for industry-ready capacity building."
+      >
         <div className="domains-grid">
-          <div className="domain-box">
-            <h3>Technical & Engineering Systems</h3>
-            <ul>
-              <li>Infrastructure and utility systems</li>
-              <li>Equipment engineering and operations</li>
-              <li>Monitoring and control systems</li>
-              <li>Diagnostics and maintenance practices</li>
-            </ul>
-          </div>
-
-          <div className="domain-box">
-            <h3>Operations & System Management</h3>
-            <ul>
-              <li>System operations and coordination</li>
-              <li>Monitoring platforms and decision-making tools</li>
-              <li>Data-driven operational management</li>
-            </ul>
-          </div>
-
-          <div className="domain-box">
-            <h3>Safety & Compliance</h3>
-            <ul>
-              <li>Regulatory compliance frameworks</li>
-              <li>Workplace safety systems</li>
-              <li>Hazard identification and risk mitigation</li>
-              <li>Incident investigation and corrective actions</li>
-            </ul>
-          </div>
-
-          <div className="domain-box">
-            <h3>Asset & Maintenance Management</h3>
-            <ul>
-              <li>Asset lifecycle management</li>
-              <li>Preventive and condition-based maintenance</li>
-              <li>Reliability-centered maintenance strategies</li>
-            </ul>
-          </div>
-
-          <div className="domain-box">
-            <h3>Project & Contract Management</h3>
-            <ul>
-              <li>Project planning and execution</li>
-              <li>Contract administration and dispute management</li>
-              <li>Stakeholder coordination</li>
-            </ul>
-          </div>
-
-          <div className="domain-box">
-            <h3>Regulatory, Financial & Leadership</h3>
-            <ul>
-              <li>Regulatory frameworks and compliance</li>
-              <li>Financial management for technical professionals</li>
-              <li>
-                Leadership, team management, and organizational effectiveness
-              </li>
-            </ul>
-          </div>
+          {[
+            {
+              title: "Technical & Engineering Systems",
+              items: [
+                "Infrastructure and utility systems",
+                "Equipment engineering and operations",
+                "Monitoring and control systems",
+                "Diagnostics and maintenance practices",
+              ],
+            },
+            {
+              title: "Operations & System Management",
+              items: [
+                "System operations and coordination",
+                "Monitoring platforms and decision-making tools",
+                "Data-driven operational management",
+              ],
+            },
+            {
+              title: "Safety & Compliance",
+              items: [
+                "Regulatory compliance frameworks",
+                "Workplace safety systems",
+                "Hazard identification and risk mitigation",
+                "Incident investigation and corrective actions",
+              ],
+            },
+            {
+              title: "Asset & Maintenance Management",
+              items: [
+                "Asset lifecycle management",
+                "Preventive and condition-based maintenance",
+                "Reliability-centered maintenance strategies",
+              ],
+            },
+            {
+              title: "Project & Contract Management",
+              items: [
+                "Project planning and execution",
+                "Contract administration and dispute management",
+                "Stakeholder coordination",
+              ],
+            },
+            {
+              title: "Regulatory, Financial & Leadership",
+              items: [
+                "Regulatory frameworks and compliance",
+                "Financial management for technical professionals",
+                "Leadership, team management, and organizational effectiveness",
+              ],
+            },
+          ].map((domain, index) => (
+            <Reveal
+              key={domain.title}
+              as="div"
+              className="domain-box"
+              delay={`${0.34 + index * 0.08}s`}
+            >
+              <h3>{domain.title}</h3>
+              <ul>
+                {domain.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </Reveal>
+          ))}
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="training-formats">
-        <div className="section-header">
-          <h2>Training Delivery Formats</h2>
-        </div>
-
+      <RevealSection
+        className="training-formats"
+        ariaLabel="Training delivery formats"
+        eyebrow="How we deliver"
+        title="Training Delivery Formats"
+      >
         <div className="formats-grid">
-          <div className="format-card">
+          <Reveal as="div" className="format-card" delay="0.36s">
             <div className="format-icon">
               <i className="fas fa-building"></i>
             </div>
             <h3>On-site training at client locations</h3>
-          </div>
+          </Reveal>
 
-          <div className="format-card">
+          <Reveal as="div" className="format-card" delay="0.46s">
             <div className="format-icon">
               <i className="fas fa-users"></i>
             </div>
             <h3>Centralised training programs</h3>
-          </div>
+          </Reveal>
 
-          <div className="format-card">
+          <Reveal as="div" className="format-card" delay="0.56s">
             <div className="format-icon">
               <i className="fas fa-hotel"></i>
             </div>
             <h3>Residential training programs (structured immersive format)</h3>
-          </div>
+          </Reveal>
         </div>
 
-        <div className="format-note">
+        <Reveal className="format-note reveal-item--from-left" delay="0.66s">
           <p style={{ fontSize: "18px" }}>
             <strong>
               Residential programs are conducted subject to program design,
               batch size, and availability of suitable training facilities.
             </strong>
           </p>
-        </div>
-      </section>
+        </Reveal>
+      </RevealSection>
 
-      <section className="program-structure">
-        <div className="section-header">
-          <h2>Program Structure</h2>
-          <p>
-            Structured training modules designed to ensure competency
-            development, practical relevance, and organizational adaptability.
-          </p>
-        </div>
-
+      <RevealSection
+        className="program-structure"
+        ariaLabel="Program structure"
+        eyebrow="Program design"
+        title="Program Structure"
+        description="Structured training modules designed to ensure competency development, practical relevance, and organizational adaptability."
+      >
         <div className="structure-grid">
-          <div className="structure-card text-center">
-            <div className="structure-icon">
-              <i className="fas fa-clock"></i>
-            </div>
-            <h3>Duration</h3>
-            <p>
-              Typically 3–5 days per program, based on subject scope,
-              complexity, and participant level.
-            </p>
-          </div>
-
-          <div className="structure-card text-center">
-            <div className="structure-icon">
-              <i className="fas fa-layer-group"></i>
-            </div>
-            <h3>Format</h3>
-            <p>
-              Modular and competency-based structure designed to enable
-              structured progression, focused learning, and practical
-              understanding of key concepts.
-            </p>
-          </div>
-
-          <div className="structure-card text-center">
-            <div className="structure-icon">
-              <i className="fas fa-chalkboard-teacher"></i>
-            </div>
-            <h3>Delivery</h3>
-            <p>
-              Instructor-led sessions supported by case-based discussions and
-              application-oriented learning, delivered at client locations or
-              approved training facilities to ensure relevance to real
-              operational environments.
-            </p>
-          </div>
-
-          <div className="structure-card text-center">
-            <div className="structure-icon">
-              <i className="fas fa-sliders-h"></i>
-            </div>
-            <h3>Customization</h3>
-            <p>
-              Programs can be tailored based on sector-specific requirements,
-              participant roles, and organisational needs to ensure alignment
-              with operational objectives.
-            </p>
-          </div>
+          {[
+            {
+              icon: "fa-clock",
+              title: "Duration",
+              text: "Typically 3–5 days per program, based on subject scope, complexity, and participant level.",
+            },
+            {
+              icon: "fa-layer-group",
+              title: "Format",
+              text: "Modular and competency-based structure designed to enable structured progression, focused learning, and practical understanding of key concepts.",
+            },
+            {
+              icon: "fa-chalkboard-teacher",
+              title: "Delivery",
+              text: "Instructor-led sessions supported by case-based discussions and application-oriented learning, delivered at client locations or approved training facilities to ensure relevance to real operational environments.",
+            },
+            {
+              icon: "fa-sliders-h",
+              title: "Customization",
+              text: "Programs can be tailored based on sector-specific requirements, participant roles, and organisational needs to ensure alignment with operational objectives.",
+            },
+          ].map((item, index) => (
+            <Reveal
+              key={item.title}
+              as="div"
+              className="structure-card text-center"
+              delay={`${0.36 + index * 0.1}s`}
+            >
+              <div className="structure-icon">
+                <i className={`fas ${item.icon}`}></i>
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </Reveal>
+          ))}
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="key-outcomes">
-        <div className="section-header">
-          <h2>Key Outcomes</h2>
-          <p>
-            Expected institutional and operational impact from structured
-            training interventions.
-          </p>
-        </div>
-
+      <RevealSection
+        className="key-outcomes"
+        ariaLabel="Key outcomes"
+        eyebrow="Impact"
+        title="Key Outcomes"
+        description="Expected institutional and operational impact from structured training interventions."
+      >
         <div className="outcomes-grid">
-          <div className="outcome-box">
-            <i className="fas fa-chart-line"></i>
-            <h3>Operational Performance</h3>
-            <p>
-              Improvement in operational performance and execution capability.
-            </p>
-          </div>
-
-          <div className="outcome-box">
-            <i className="fas fa-check-circle"></i>
-            <h3>Compliance Adherence</h3>
-            <p>
-              Increased adherence to procedures and compliance requirements.
-            </p>
-          </div>
-
-          <div className="outcome-box">
-            <i className="fas fa-shield-alt"></i>
-            <h3>Risk Reduction</h3>
-            <p>Reduction in operational and safety-related risks.</p>
-          </div>
-
-          <div className="outcome-box">
-            <i className="fas fa-user-cog"></i>
-            <h3>Capability Enhancement</h3>
-            <p>Enhanced capability in technical and managerial functions.</p>
-          </div>
+          {[
+            { icon: "fa-chart-line", title: "Operational Performance", text: "Improvement in operational performance and execution capability." },
+            { icon: "fa-check-circle", title: "Compliance Adherence", text: "Increased adherence to procedures and compliance requirements." },
+            { icon: "fa-shield-alt", title: "Risk Reduction", text: "Reduction in operational and safety-related risks." },
+            { icon: "fa-user-cog", title: "Capability Enhancement", text: "Enhanced capability in technical and managerial functions." },
+          ].map((outcome, index) => (
+            <Reveal
+              key={outcome.title}
+              as="div"
+              className="outcome-box"
+              delay={`${0.36 + index * 0.1}s`}
+            >
+              <i className={`fas ${outcome.icon}`}></i>
+              <h3>{outcome.title}</h3>
+              <p>{outcome.text}</p>
+            </Reveal>
+          ))}
         </div>
-      </section>
+      </RevealSection>
     </main>
   );
 }

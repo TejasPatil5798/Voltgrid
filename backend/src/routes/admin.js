@@ -1,10 +1,14 @@
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
+const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const Contact = require('../models/Contact')
 const ExpertRegistration = require('../models/ExpertRegistration')
-const { requireAdmin } = require('../middleware/auth')
+const User = require('../models/User')
+const TutorProfile = require('../models/TutorProfile')
+const Course = require('../models/Course')
+const { requireAdmin, resolveRole } = require('../middleware/auth')
 
 const router = express.Router()
 const dataDir = path.join(__dirname, '..', '..', 'data')
@@ -21,6 +25,41 @@ function loadFileRegistrations() {
 function saveFileRegistrations(list) {
     if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
     fs.writeFileSync(regsFile, JSON.stringify(list, null, 2))
+}
+
+function dbReady() {
+    return mongoose.connection.readyState === 1
+}
+
+function formatPortalUser(doc) {
+    const role = resolveRole(doc)
+    const normalized = role === 'student' ? 'learner' : role
+    return {
+        id: doc._id.toString(),
+        name: doc.name || '',
+        email: doc.email,
+        role: normalized,
+        createdAt: doc.createdAt,
+        created: doc.createdAt
+            ? new Date(doc.createdAt).toLocaleDateString('en-IN', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+              })
+            : '',
+    }
+}
+
+function normalizePortalRole(role) {
+    const r = String(role || '').toLowerCase()
+    if (r === 'student') return 'learner'
+    if (r === 'tutor' || r === 'learner') return r
+    return null
+}
+
+async function ensureTutorProfile(userId) {
+    const exists = await TutorProfile.findOne({ userId })
+    if (!exists) await TutorProfile.create({ userId })
 }
 
 function getFileRegistrationIndex(list, id) {
@@ -126,6 +165,118 @@ router.post('/registrations/:id/active', requireAdmin, async (req, res) => {
          res.status(500).json({ error: 'Failed to approve' })
      }
  })
+
+router.get('/users', requireAdmin, async (req, res) => {
+    try {
+        if (!dbReady()) return res.status(503).json({ error: 'Database unavailable' })
+        const roleFilter = String(req.query.role || '').toLowerCase()
+        let query = { role: { $in: ['tutor', 'learner', 'student'] } }
+        if (roleFilter === 'tutor') query = { role: 'tutor' }
+        if (roleFilter === 'learner') query = { role: { $in: ['learner', 'student'] } }
+        const users = await User.find(query).sort({ createdAt: -1 }).lean()
+        res.json({ success: true, data: users.map(formatPortalUser) })
+    } catch (err) {
+        console.error('admin list users error', err)
+        res.status(500).json({ error: 'Failed to load users' })
+    }
+})
+
+router.post('/users', requireAdmin, async (req, res) => {
+    try {
+        if (!dbReady()) return res.status(503).json({ error: 'Database unavailable' })
+        const role = normalizePortalRole(req.body?.role)
+        const name = String(req.body?.name || '').trim()
+        const email = String(req.body?.email || '').trim().toLowerCase()
+        const password = req.body?.password
+        if (!role) return res.status(400).json({ error: 'Role must be tutor or learner' })
+        if (!email) return res.status(400).json({ error: 'Email is required' })
+        if (!password || String(password).length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters' })
+        }
+        const existing = await User.findOne({ email })
+        if (existing) return res.status(409).json({ error: 'A user with this email already exists' })
+        const hash = await bcrypt.hash(String(password), 10)
+        const user = await User.create({
+            name: name || (role === 'tutor' ? 'Tutor' : 'Learner'),
+            email,
+            passwordHash: hash,
+            role,
+            isAdmin: false,
+        })
+        if (role === 'tutor') await ensureTutorProfile(user._id)
+        res.json({ success: true, data: formatPortalUser(user.toObject()) })
+    } catch (err) {
+        console.error('admin create user error', err)
+        res.status(500).json({ error: 'Failed to create user' })
+    }
+})
+
+router.put('/users/:id', requireAdmin, async (req, res) => {
+    try {
+        if (!dbReady()) return res.status(503).json({ error: 'Database unavailable' })
+        const user = await User.findById(req.params.id)
+        if (!user) return res.status(404).json({ error: 'User not found' })
+        const currentRole = resolveRole(user)
+        if (currentRole === 'admin') {
+            return res.status(403).json({ error: 'Admin accounts cannot be edited here' })
+        }
+        const body = req.body || {}
+        if (body.name != null) user.name = String(body.name).trim()
+        if (body.email != null) {
+            const email = String(body.email).trim().toLowerCase()
+            if (!email) return res.status(400).json({ error: 'Email is required' })
+            const dup = await User.findOne({ email, _id: { $ne: user._id } })
+            if (dup) return res.status(409).json({ error: 'Email already in use' })
+            user.email = email
+        }
+        if (body.role != null) {
+            const nextRole = normalizePortalRole(body.role)
+            if (!nextRole) return res.status(400).json({ error: 'Role must be tutor or learner' })
+            user.role = nextRole
+            user.isAdmin = false
+            if (nextRole === 'tutor') await ensureTutorProfile(user._id)
+        }
+        if (body.password) {
+            if (String(body.password).length < 6) {
+                return res.status(400).json({ error: 'Password must be at least 6 characters' })
+            }
+            user.passwordHash = await bcrypt.hash(String(body.password), 10)
+        }
+        await user.save()
+        res.json({ success: true, data: formatPortalUser(user.toObject()) })
+    } catch (err) {
+        console.error('admin update user error', err)
+        res.status(500).json({ error: 'Failed to update user' })
+    }
+})
+
+router.delete('/users/:id', requireAdmin, async (req, res) => {
+    try {
+        if (!dbReady()) return res.status(503).json({ error: 'Database unavailable' })
+        const targetId = req.params.id
+        if (req.user?.id === targetId) {
+            return res.status(403).json({ error: 'You cannot delete your own account' })
+        }
+        const user = await User.findById(targetId)
+        if (!user) return res.status(404).json({ error: 'User not found' })
+        const role = resolveRole(user)
+        if (role === 'admin') return res.status(403).json({ error: 'Admin accounts cannot be deleted' })
+        if (role === 'tutor') {
+            const courseCount = await Course.countDocuments({ tutorId: user._id })
+            if (courseCount > 0) {
+                return res.status(409).json({
+                    error: 'This tutor has courses. Remove or reassign their courses before deleting the account.',
+                })
+            }
+            await TutorProfile.deleteOne({ userId: user._id })
+        }
+        await User.deleteOne({ _id: user._id })
+        res.json({ success: true, deleted: true })
+    } catch (err) {
+        console.error('admin delete user error', err)
+        res.status(500).json({ error: 'Failed to delete user' })
+    }
+})
 
 router.delete('/registrations/:id', requireAdmin, async (req, res) => {
     try {

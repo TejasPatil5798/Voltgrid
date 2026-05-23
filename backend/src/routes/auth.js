@@ -1,46 +1,99 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const mongoose = require('mongoose')
 const User = require('../models/User')
+const { loadUserFromToken, resolveRole } = require('../middleware/auth')
 const router = express.Router()
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret'
 
+function userPayload(user) {
+  const role = typeof user.getRole === 'function' ? user.getRole() : resolveRole(user)
+  return {
+    id: user._id.toString(),
+    email: user.email,
+    name: user.name,
+    role,
+  }
+}
+
+function signToken(user) {
+  const payload = userPayload(user)
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' })
+  return { token, user: payload }
+}
+
 router.post('/register', async (req, res) => {
-  try{
-    const { name, email, password } = req.body
-    if(!email || !password) return res.status(400).json({ error: 'Missing fields' })
+  try {
+    const name = req.body.name
+    const email = String(req.body.email || '').trim().toLowerCase()
+    const password = req.body.password
+    const role = req.body.role
+    if (!email || !password) return res.status(400).json({ error: 'Missing fields' })
     const existing = await User.findOne({ email })
-    if(existing) return res.status(409).json({ error: 'User exists' })
+    if (existing) return res.status(409).json({ error: 'User exists' })
     const hash = await bcrypt.hash(password, 10)
-    const u = new User({ name, email, passwordHash: hash })
+    const assignedRole =
+      role && User.ROLES.includes(role) && role !== 'admin'
+        ? role === 'student'
+          ? 'learner'
+          : role
+        : 'learner'
+    const u = new User({ name, email, passwordHash: hash, role: assignedRole })
     await u.save()
     return res.json({ success: true })
-  }catch(err){
+  } catch (err) {
     console.error('register error', err)
     return res.status(500).json({ error: 'Registration failed' })
   }
 })
 
+function dbReady() {
+  return mongoose.connection.readyState === 1
+}
+
 router.post('/login', async (req, res) => {
-  try{
-    const { email, password } = req.body
-    if(!email || !password) return res.status(400).json({ error: 'Missing fields' })
-    const user = await User.findOne({ email })
-    if(!user) return res.status(401).json({ error: 'Invalid credentials' })
-    if(!user.passwordHash) return res.status(500).json({ error: 'User record invalid' })
+  try {
+    const email = String(req.body.email || '').trim().toLowerCase()
+    const password = req.body.password
+    if (!email || !password) return res.status(400).json({ error: 'Missing fields' })
+    if (!dbReady()) {
+      return res.status(503).json({ error: 'Database unavailable. Check MongoDB connection.' })
+    }
+    let user = await User.findOne({ email })
+    if (!user) {
+      const escaped = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      user = await User.findOne({ email: { $regex: new RegExp(`^${escaped}$`, 'i') } })
+    }
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' })
+    if (!user.passwordHash) return res.status(500).json({ error: 'User record invalid' })
     let ok = false
-    try{ ok = await bcrypt.compare(password, user.passwordHash) }catch(e){
+    try {
+      ok = await bcrypt.compare(password, user.passwordHash)
+    } catch (e) {
       console.error('bcrypt compare failed', e)
       return res.status(500).json({ error: 'Authentication error' })
     }
-    if(!ok) return res.status(401).json({ error: 'Invalid credentials' })
-    const token = jwt.sign({ id: user._id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '1d' })
-    return res.json({ success: true, token })
-  }catch(err){
+    if (!ok) return res.status(401).json({ error: 'Invalid credentials' })
+
+    const role = user.getRole()
+    if (user.role !== role || (role === 'admin' && !user.isAdmin)) {
+      user.role = role
+      user.isAdmin = role === 'admin'
+      await user.save()
+    }
+
+    const { token, user: profile } = signToken(user)
+    return res.json({ success: true, token, user: profile })
+  } catch (err) {
     console.error('login error', err && err.stack ? err.stack : err)
     return res.status(500).json({ error: 'Login failed', details: err.message })
   }
+})
+
+router.get('/me', loadUserFromToken, (req, res) => {
+  return res.json({ success: true, user: req.user })
 })
 
 module.exports = router
