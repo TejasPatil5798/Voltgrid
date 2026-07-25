@@ -92,6 +92,41 @@ function getFileRegistrationIndex(list, id) {
     }
 })
 
+router.delete('/contacts/:id', requireAdmin, async (req, res) => {
+    try {
+        const id = String(req.params.id || '').trim()
+        if (!id) return res.status(400).json({ error: 'Contact id is required' })
+
+        if (mongoose.connection.readyState === 1) {
+            const deleted = await Contact.findByIdAndDelete(id)
+            if (!deleted) return res.status(404).json({ error: 'Contact submission not found' })
+            return res.json({ success: true })
+        }
+
+        const contactsFile = path.join(dataDir, 'contacts.json')
+        let list = []
+        if (fs.existsSync(contactsFile)) {
+            try {
+                list = JSON.parse(fs.readFileSync(contactsFile, 'utf8') || '[]')
+            } catch {
+                list = []
+            }
+        }
+        const next = list.filter((item, index) => {
+            const itemId = String(item._id || item.id || `file-${index}`)
+            return itemId !== id
+        })
+        if (next.length === list.length) {
+            return res.status(404).json({ error: 'Contact submission not found' })
+        }
+        fs.writeFileSync(contactsFile, JSON.stringify(next, null, 2))
+        return res.json({ success: true, source: 'file' })
+    } catch (err) {
+        console.error('admin contact delete error', err)
+        res.status(500).json({ error: 'Failed to delete contact submission' })
+    }
+})
+
 router.get('/visits', requireAdmin, async (req, res) => {
     try {
         if (!dbReady()) {

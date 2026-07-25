@@ -88,11 +88,17 @@ async function saveContactEntry(entry) {
 
 router.post('/google', async (req, res) => {
   try {
+    const name = String(req.body?.name || '').trim() || '(Google Form)'
+    const email = String(req.body?.email || '').trim() || 'google-form@voltgrid.local'
+    const subject = String(req.body?.subject || '').trim() || 'Contact Us'
+    const message =
+      String(req.body?.message || '').trim() ||
+      'Submitted via Google Form (no field payload received).'
     const entry = {
-      name: '(Google Form)',
-      email: 'google-form@voltgrid.local',
-      subject: 'Contact Us',
-      message: 'Submitted via embedded Google Form on the Contact page.',
+      name,
+      email,
+      subject,
+      message,
       source: 'google_form',
     }
     const result = await saveContactEntry(entry)

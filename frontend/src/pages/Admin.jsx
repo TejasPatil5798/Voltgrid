@@ -4,6 +4,7 @@ import AdminUsersSection from '../components/admin/AdminUsersSection'
 import { apiUrl } from '../lib/api'
 import { getCurrentUser, getToken } from '../lib/auth'
 import { fetchAdminUsers, fetchAdminVisits } from '../lib/adminApi'
+import { GOOGLE_FORM_RESPONSES_URL, GOOGLE_FORM_VIEW_URL } from '../lib/googleForm'
 
 function useFetch(url, token, refreshKey) {
   const [data, setData] = useState(null)
@@ -85,9 +86,19 @@ function AdminStatCard({ label, value, tone, delay, hint }) {
   )
 }
 
-function AdminPortalSection({ user, stats, contactCount, visitStats, loading, contactsLoading, visitsLoading }) {
+function AdminPortalSection({
+  user,
+  stats,
+  contactCount,
+  visitStats = { totalVisits: 0, uniqueVisitors: 0 },
+  loading,
+  contactsLoading,
+  visitsLoading,
+}) {
   const approvalRate = stats.total > 0 ? Math.round((stats.approved / stats.total) * 100) : 0
   const initial = (user?.name || user?.email || 'A').charAt(0).toUpperCase()
+  const uniqueVisitors = visitStats?.uniqueVisitors ?? 0
+  const totalVisits = visitStats?.totalVisits ?? 0
 
   return (
     <header className="admin-portal">
@@ -186,10 +197,10 @@ function AdminPortalSection({ user, stats, contactCount, visitStats, loading, co
             />
             <AdminStatCard
               label="People visited"
-              value={visitsLoading ? '—' : visitStats.uniqueVisitors}
+              value={visitsLoading ? '—' : uniqueVisitors}
               tone="visits"
               delay={400}
-              hint={`${visitStats.totalVisits} total sessions`}
+              hint={`${totalVisits} total sessions`}
             />
           </div>
         </aside>
@@ -241,7 +252,8 @@ function RegDetail({ label, children }) {
   )
 }
 
-function ContactSubmissionCard({ contact: c, index }) {
+function ContactSubmissionCard({ contact: c, index, onDelete, deleting }) {
+  const id = c._id || c.id
   const isGoogle = c.source === 'google_form'
   return (
     <article
@@ -251,16 +263,24 @@ function ContactSubmissionCard({ contact: c, index }) {
       <header className="admin-reg-card-header">
         <div className="admin-reg-card-title-wrap">
           <h3 className="admin-reg-card-title">{c.name || 'Contact enquiry'}</h3>
-          {c.email && !isGoogle && <p className="admin-reg-card-subtitle">{c.email}</p>}
+          {c.email && <p className="admin-reg-card-subtitle">{c.email}</p>}
         </div>
         <span className={`admin-pill ${isGoogle ? 'admin-pill--active' : 'admin-pill--approved'}`}>
           {isGoogle ? 'Google Form' : 'Website'}
         </span>
       </header>
       {c.subject && <RegDetail label="Subject">{c.subject}</RegDetail>}
-      {c.message && !isGoogle && <RegDetail label="Message">{c.message}</RegDetail>}
-      <footer className="admin-reg-footer">
+      {c.message && <RegDetail label="Message">{c.message}</RegDetail>}
+      <footer className="admin-reg-footer admin-contact-footer">
         <time dateTime={c.createdAt}>Submitted {formatDate(c.createdAt)}</time>
+        <button
+          type="button"
+          className="btn btn-danger admin-contact-delete"
+          disabled={deleting || !id}
+          onClick={() => onDelete?.(id, c.name)}
+        >
+          {deleting ? 'Deleting…' : 'Delete'}
+        </button>
       </footer>
     </article>
   )
@@ -400,6 +420,7 @@ export default function Admin() {
   const [usersError, setUsersError] = useState(null)
   const [visitStats, setVisitStats] = useState({ totalVisits: 0, uniqueVisitors: 0 })
   const [visitsLoading, setVisitsLoading] = useState(false)
+  const [deletingContactId, setDeletingContactId] = useState(null)
   const regs = useFetch('/api/admin/registrations', token, refresh)
   const contacts = useFetch('/api/admin/contacts', token, refresh)
 
@@ -562,6 +583,31 @@ export default function Admin() {
     }
   }
 
+  async function deleteContact(id, name) {
+    if (!token) return alert('Not authenticated')
+    if (!id) return alert('Missing contact id')
+    const confirmed = window.confirm(
+      `Delete contact submission from ${name || 'this person'}? This cannot be undone.`,
+    )
+    if (!confirmed) return
+    setDeletingContactId(id)
+    try {
+      const res = await fetch(apiUrl('/api/admin/contacts/' + encodeURIComponent(id)), {
+        method: 'DELETE',
+        headers: { Authorization: 'Bearer ' + token },
+      })
+      const data = await res.json().catch(() => null)
+      if (!res.ok || !data?.success) {
+        return alert('Delete failed: ' + (data?.error || res.statusText))
+      }
+      setRefresh((r) => r + 1)
+    } catch (e) {
+      alert('Delete failed: ' + e.message)
+    } finally {
+      setDeletingContactId(null)
+    }
+  }
+
   return (
     <main className="admin-page">
       <div className="admin-page-glow" aria-hidden="true" />
@@ -586,7 +632,7 @@ export default function Admin() {
       />
 
       <section className="admin-section admin-section--contacts" aria-labelledby="admin-contact-heading">
-        <details className="admin-contacts-panel">
+        <details className="admin-contacts-panel" open>
           <summary className="admin-contacts-summary">
             <div className="admin-contacts-summary-text">
               <h2 id="admin-contact-heading" className="admin-section-title">
@@ -605,6 +651,25 @@ export default function Admin() {
           </summary>
 
           <div className="admin-contacts-body">
+            <div className="admin-contacts-toolbar">
+              <a
+                href={GOOGLE_FORM_RESPONSES_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-primary admin-google-form-btn"
+              >
+                View Google Form records
+              </a>
+              <a
+                href={GOOGLE_FORM_VIEW_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="btn admin-google-form-btn-secondary"
+              >
+                Open Google Form
+              </a>
+            </div>
+
             {contacts.loading && (
               <div className="admin-loading-banner">
                 <span className="admin-loading-spinner" />
@@ -627,9 +692,18 @@ export default function Admin() {
 
             {!contacts.loading && contactCount > 0 && (
               <div className="admin-reg-grid admin-contact-grid">
-                {allContacts.map((c, idx) => (
-                  <ContactSubmissionCard key={c._id || c.createdAt || idx} contact={c} index={idx} />
-                ))}
+                {allContacts.map((c, idx) => {
+                  const id = c._id || c.id
+                  return (
+                    <ContactSubmissionCard
+                      key={id || c.createdAt || idx}
+                      contact={c}
+                      index={idx}
+                      onDelete={deleteContact}
+                      deleting={deletingContactId === id}
+                    />
+                  )
+                })}
               </div>
             )}
           </div>

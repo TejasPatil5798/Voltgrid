@@ -14,6 +14,8 @@ import Experts from './pages/Experts'
 import Admin from './pages/Admin'
 import Tutor from './pages/Tutor'
 import Learner from './pages/Learner'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import Profile from './pages/Profile'
 import { ROLES } from './lib/auth'
 import { trackSiteVisit } from './lib/visitTracker'
 
@@ -45,7 +47,16 @@ export default function App() {
           <Route path="/programs" element={<Programs />} />
           <Route path="/safety" element={<Safety />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/experts" element={<Experts />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={[ROLES.admin, ROLES.tutor, ROLES.learner]}>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/admin"
             element={

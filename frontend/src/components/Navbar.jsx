@@ -8,6 +8,7 @@ import {
   roleLabel,
 } from '../lib/auth'
 import MessageNotificationBadge from './messages/MessageNotificationBadge'
+import UserProfileMenu from './UserProfileMenu'
 
 function NavLinks({ items, loggedIn, user, onNavigate, onLogout }) {
   return (
@@ -138,6 +139,7 @@ export default function Navbar() {
               onLogout={handleLogout}
             />
           </nav>
+          {loggedIn && <UserProfileMenu onNavigate={closeMenu} />}
         </div>
 
         <button

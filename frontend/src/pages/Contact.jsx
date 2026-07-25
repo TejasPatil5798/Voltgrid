@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import RevealSection, { Reveal } from "../components/RevealSection";
 import { apiUrl } from "../lib/api";
+import { GOOGLE_FORM_VIEW_URL } from "../lib/googleForm";
 import contactHeroImage from "../assets/images/contact-hero.jpeg";
 
 const contactIntro = {
@@ -26,22 +27,55 @@ const enquiryTopics = [
   "Partnerships and collaborations",
 ];
 
-const googleFormUrl =
-  "https://docs.google.com/forms/d/e/1FAIpQLSdk2Rk-MGz8gcAOvwbHqrNhlC_JxrXGOxeodFfGv5uHrnDFtQ/viewform?usp=pp_url";
-const googleFormEmbedUrl =
-  "https://docs.google.com/forms/d/e/1FAIpQLSdk2Rk-MGz8gcAOvwbHqrNhlC_JxrXGOxeodFfGv5uHrnDFtQ/viewform?embedded=true";
-
-function trackGoogleFormSubmission() {
-  fetch(apiUrl("/api/contact/google"), { method: "POST" }).catch(() => {});
-}
+const emptyForm = {
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+};
 
 export default function Contact() {
-  const formLoadCount = useRef(0);
+  const [form, setForm] = useState(emptyForm);
+  const [status, setStatus] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleFormEmbedLoad() {
-    formLoadCount.current += 1;
-    if (formLoadCount.current > 1) {
-      trackGoogleFormSubmission();
+  function updateField(field) {
+    return (event) => {
+      setForm((prev) => ({ ...prev, [field]: event.target.value }));
+      if (status) setStatus(null);
+    };
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setSubmitting(true);
+    setStatus(null);
+    try {
+      const res = await fetch(apiUrl("/api/contact"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setStatus({
+          type: "error",
+          text: data.error || "Could not send your message. Please try again.",
+        });
+        return;
+      }
+      setForm(emptyForm);
+      setStatus({
+        type: "success",
+        text: "Thank you — your message was sent. Our team will get back to you soon.",
+      });
+    } catch {
+      setStatus({
+        type: "error",
+        text: "Cannot reach the server. Please try again in a moment.",
+      });
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -115,27 +149,84 @@ export default function Contact() {
             <Reveal className="contact-form-box" delay="0.38s">
               <h2 className="head-sec text-center">Contact Form</h2>
               <p className="contact-form-copy">
-                Fill out the Google Form below to share your requirement. If the
-                form does not load, use the direct link to open it in a new tab.
+                Send your enquiry below. Submissions appear in the admin
+                dashboard so our team can respond quickly.
               </p>
-              <a
-                href={googleFormUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-primary contact-submit"
-                style={{ textDecoration: "none" }}
-              >
-                Open Google Form
-              </a>
-              <iframe
-                title="Voltgrid contact form"
-                src={googleFormEmbedUrl}
-                className="contact-form-embed"
-                loading="lazy"
-                onLoad={handleFormEmbedLoad}
-              >
-                Loading…
-              </iframe>
+
+              <form className="contact-form" onSubmit={handleSubmit}>
+                <label className="visually-hidden" htmlFor="contact-name">
+                  Name
+                </label>
+                <input
+                  id="contact-name"
+                  name="name"
+                  type="text"
+                  placeholder="Your name"
+                  value={form.name}
+                  onChange={updateField("name")}
+                  required
+                  autoComplete="name"
+                />
+                <label className="visually-hidden" htmlFor="contact-email">
+                  Email
+                </label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  placeholder="Your email"
+                  value={form.email}
+                  onChange={updateField("email")}
+                  required
+                  autoComplete="email"
+                />
+                <label className="visually-hidden" htmlFor="contact-subject">
+                  Subject
+                </label>
+                <input
+                  id="contact-subject"
+                  name="subject"
+                  type="text"
+                  placeholder="Subject (optional)"
+                  value={form.subject}
+                  onChange={updateField("subject")}
+                />
+                <label className="visually-hidden" htmlFor="contact-message">
+                  Message
+                </label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  placeholder="How can we help?"
+                  value={form.message}
+                  onChange={updateField("message")}
+                  required
+                  rows={6}
+                />
+                <button
+                  type="submit"
+                  className="btn btn-primary contact-submit"
+                  disabled={submitting}
+                >
+                  {submitting ? "Sending…" : "Send message"}
+                </button>
+              </form>
+
+              {status && (
+                <p
+                  className={`contact-status contact-status--${status.type}`}
+                  role="status"
+                >
+                  {status.text}
+                </p>
+              )}
+
+              <p className="contact-form-alt">
+                Prefer Google Forms?{" "}
+                <a href={GOOGLE_FORM_VIEW_URL} target="_blank" rel="noreferrer">
+                  Open Google Form
+                </a>
+              </p>
             </Reveal>
           </div>
         </RevealSection>

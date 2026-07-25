@@ -101,4 +101,39 @@ router.get('/me', loadUserFromToken, (req, res) => {
   return res.json({ success: true, user: req.user })
 })
 
+router.put('/profile', loadUserFromToken, async (req, res) => {
+  try {
+    if (!dbReady()) {
+      return res.status(503).json({ error: 'Database unavailable. Check MongoDB connection.' })
+    }
+    const user = await User.findById(req.user.id)
+    if (!user) return res.status(404).json({ error: 'User not found' })
+
+    const name = String(req.body?.name || '').trim()
+    const currentPassword = req.body?.currentPassword
+    const newPassword = req.body?.newPassword
+
+    if (name) user.name = name
+
+    if (newPassword) {
+      if (String(newPassword).length < 6) {
+        return res.status(400).json({ error: 'New password must be at least 6 characters' })
+      }
+      if (!currentPassword) {
+        return res.status(400).json({ error: 'Current password is required to change password' })
+      }
+      const ok = await bcrypt.compare(String(currentPassword), user.passwordHash)
+      if (!ok) return res.status(401).json({ error: 'Current password is incorrect' })
+      user.passwordHash = await bcrypt.hash(String(newPassword), 10)
+    }
+
+    await user.save()
+    const { token, user: profile } = signToken(user)
+    return res.json({ success: true, token, user: profile })
+  } catch (err) {
+    console.error('profile update error', err)
+    return res.status(500).json({ error: 'Failed to update profile' })
+  }
+})
+
 module.exports = router

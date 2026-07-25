@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -15,19 +16,22 @@ export default function Footer() {
           <h3>Quick Links</h3>
           <ul>
             <li>
-              <a href="/">Home</a>
+              <Link to="/">Home</Link>
             </li>
             <li>
-              <a href="/about">About</a>
+              <Link to="/about">About</Link>
             </li>
             <li>
-              <a href="/programs">Training Programs</a>
+              <Link to="/programs">Training Programs</Link>
             </li>
             <li>
-              <a href="/safety">Safety & Compliance</a>
+              <Link to="/safety">Safety &amp; Compliance</Link>
             </li>
             <li>
-              <a href="/contact">Contact</a>
+              <Link to="/contact">Contact</Link>
+            </li>
+            <li>
+              <Link to="/privacy">Privacy Policy</Link>
             </li>
           </ul>
         </div>
@@ -52,7 +56,10 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>© 2026 VoltGrid | All Rights Reserved</p>
+        <p>
+          © 2026 VoltGrid | All Rights Reserved ·{" "}
+          <Link to="/privacy">Privacy Policy</Link>
+        </p>
       </div>
     </footer>
   );
