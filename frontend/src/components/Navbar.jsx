@@ -113,14 +113,15 @@ export default function Navbar() {
     <header className="site-header">
       <div className="site-header-bar" ref={headerBarRef}>
         <div className="brand-block">
-          <NavLink to="/" className="brand-link" onClick={closeMenu}>
-            <span className="brand-mark" aria-hidden="true">
-              VI
-            </span>
-            <span className="brand-copy">
-              <span className="logo">Voltgrid Insights</span>
-              <span className="brand-tagline">Power. Precision. Performance.</span>
-            </span>
+          <NavLink to="/" className="brand-link" onClick={closeMenu} aria-label="Voltgrid Insights home">
+            <img
+              src="/Logo.jpeg"
+              alt="Voltgrid Insights"
+              className="brand-logo"
+              width={220}
+              height={64}
+              decoding="async"
+            />
           </NavLink>
         </div>
 

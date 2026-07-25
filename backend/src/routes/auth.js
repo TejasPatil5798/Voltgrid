@@ -61,13 +61,14 @@ router.post('/login', async (req, res) => {
     if (!dbReady()) {
       return res.status(503).json({ error: 'Database unavailable. Check MongoDB connection.' })
     }
-    let user = await User.findOne({ email })
-    if (!user) {
-      const escaped = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      user = await User.findOne({ email: { $regex: new RegExp(`^${escaped}$`, 'i') } })
-    }
+
+    // Single indexed lookup — emails are stored lowercase on register/seed
+    const user = await User.findOne({ email })
+      .select('_id email name passwordHash role isAdmin')
+      .exec()
     if (!user) return res.status(401).json({ error: 'Invalid credentials' })
     if (!user.passwordHash) return res.status(500).json({ error: 'User record invalid' })
+
     let ok = false
     try {
       ok = await bcrypt.compare(password, user.passwordHash)
@@ -77,11 +78,15 @@ router.post('/login', async (req, res) => {
     }
     if (!ok) return res.status(401).json({ error: 'Invalid credentials' })
 
-    const role = user.getRole()
+    const role = typeof user.getRole === 'function' ? user.getRole() : resolveRole(user)
+    // Don't block the login response on role migration writes
     if (user.role !== role || (role === 'admin' && !user.isAdmin)) {
+      User.updateOne(
+        { _id: user._id },
+        { $set: { role, isAdmin: role === 'admin' } },
+      ).catch((err) => console.error('role migration failed', err.message))
       user.role = role
       user.isAdmin = role === 'admin'
-      await user.save()
     }
 
     const { token, user: profile } = signToken(user)

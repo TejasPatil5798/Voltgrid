@@ -13,11 +13,13 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   async function handleSubmit(e) {
     e.preventDefault()
     setError(null)
+    setLoading(true)
     try {
       const res = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
@@ -35,6 +37,8 @@ export default function Login() {
       navigate(dashboardPathForRole(data.user.role), { replace: true })
     } catch (err) {
       setError('Cannot reach the API. Start the backend on port 5000 and use the frontend dev server (port 5173).')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -78,8 +82,8 @@ export default function Login() {
               placeholder="Password"
               required
             />
-            <button type="submit" className="btn btn-primary login-submit">
-              Login
+            <button type="submit" className="btn btn-primary login-submit" disabled={loading}>
+              {loading ? 'Signing in…' : 'Login'}
             </button>
             {error && <p className="login-error">{error}</p>}
           </form>

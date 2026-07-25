@@ -8,6 +8,7 @@ const ExpertRegistration = require('../models/ExpertRegistration')
 const User = require('../models/User')
 const TutorProfile = require('../models/TutorProfile')
 const Course = require('../models/Course')
+const SiteStats = require('../models/SiteStats')
 const { requireAdmin, resolveRole } = require('../middleware/auth')
 
 const router = express.Router()
@@ -72,8 +73,7 @@ function getFileRegistrationIndex(list, id) {
     return list.findIndex(x => x._id === id || x.id === id)
 }
 
-// List contacts (protected)
- // List contacts (admin only)
+// List contacts (admin only)
  router.get('/contacts', requireAdmin, async (req, res) => {
     try {
         if (mongoose.connection.readyState === 1) {
@@ -89,6 +89,28 @@ function getFileRegistrationIndex(list, id) {
     } catch (err) {
         console.error('admin contacts error', err)
         res.status(500).json({ error: 'Failed to load contacts' })
+    }
+})
+
+router.get('/visits', requireAdmin, async (req, res) => {
+    try {
+        if (!dbReady()) {
+            return res.json({ success: true, data: { totalVisits: 0, uniqueVisitors: 0 } })
+        }
+        let stats = await SiteStats.findById('global').lean()
+        if (!stats) {
+            stats = { totalVisits: 0, uniqueVisitors: 0 }
+        }
+        return res.json({
+            success: true,
+            data: {
+                totalVisits: stats.totalVisits || 0,
+                uniqueVisitors: stats.uniqueVisitors || 0,
+            },
+        })
+    } catch (err) {
+        console.error('admin visits error', err)
+        res.status(500).json({ error: 'Failed to load visit stats' })
     }
 })
 

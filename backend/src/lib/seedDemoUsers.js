@@ -11,18 +11,32 @@ const DEMO_USERS = [
   { email: 'demo-admin@voltgrid.local', name: 'Demo Admin', role: 'admin' },
 ]
 
+let cachedDemoHash = null
+
+async function getDemoHash() {
+  if (!cachedDemoHash) {
+    cachedDemoHash = await bcrypt.hash(DEMO_PASS, 10)
+  }
+  return cachedDemoHash
+}
+
 async function upsertUser({ email, name, role, password }) {
   const normalized = email.trim().toLowerCase()
-  const hash = await bcrypt.hash(password, 10)
-  const existing = await User.findOne({ email: normalized })
+  const existing = await User.findOne({ email: normalized }).select('_id role isAdmin name passwordHash')
   if (existing) {
-    existing.name = name
-    existing.passwordHash = hash
-    existing.role = role
-    existing.isAdmin = role === 'admin'
-    await existing.save()
-    return 'updated'
+    const needsRoleFix = existing.role !== role || (role === 'admin') !== !!existing.isAdmin
+    const needsNameFix = existing.name !== name
+    // Keep existing password hash — avoid expensive bcrypt on every server restart
+    if (needsRoleFix || needsNameFix) {
+      await User.updateOne(
+        { _id: existing._id },
+        { $set: { name, role, isAdmin: role === 'admin' } },
+      )
+      return 'updated'
+    }
+    return 'unchanged'
   }
+  const hash = await getDemoHash()
   await User.create({
     name,
     email: normalized,

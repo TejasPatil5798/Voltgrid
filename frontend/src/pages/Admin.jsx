@@ -3,7 +3,7 @@ import ImageLightbox from '../components/ImageLightbox'
 import AdminUsersSection from '../components/admin/AdminUsersSection'
 import { apiUrl } from '../lib/api'
 import { getCurrentUser, getToken } from '../lib/auth'
-import { fetchAdminUsers } from '../lib/adminApi'
+import { fetchAdminUsers, fetchAdminVisits } from '../lib/adminApi'
 
 function useFetch(url, token, refreshKey) {
   const [data, setData] = useState(null)
@@ -64,6 +64,7 @@ const STAT_ICONS = {
   pending: '◷',
   active: '●',
   contact: '✉',
+  visits: '👁',
 }
 
 function AdminStatCard({ label, value, tone, delay, hint }) {
@@ -84,7 +85,7 @@ function AdminStatCard({ label, value, tone, delay, hint }) {
   )
 }
 
-function AdminPortalSection({ user, stats, contactCount, loading, contactsLoading }) {
+function AdminPortalSection({ user, stats, contactCount, visitStats, loading, contactsLoading, visitsLoading }) {
   const approvalRate = stats.total > 0 ? Math.round((stats.approved / stats.total) * 100) : 0
   const initial = (user?.name || user?.email || 'A').charAt(0).toUpperCase()
 
@@ -182,6 +183,13 @@ function AdminPortalSection({ user, stats, contactCount, loading, contactsLoadin
               tone="contact"
               delay={320}
               hint="Form submissions"
+            />
+            <AdminStatCard
+              label="People visited"
+              value={visitsLoading ? '—' : visitStats.uniqueVisitors}
+              tone="visits"
+              delay={400}
+              hint={`${visitStats.totalVisits} total sessions`}
             />
           </div>
         </aside>
@@ -390,8 +398,35 @@ export default function Admin() {
   const [portalUsers, setPortalUsers] = useState([])
   const [usersLoading, setUsersLoading] = useState(false)
   const [usersError, setUsersError] = useState(null)
+  const [visitStats, setVisitStats] = useState({ totalVisits: 0, uniqueVisitors: 0 })
+  const [visitsLoading, setVisitsLoading] = useState(false)
   const regs = useFetch('/api/admin/registrations', token, refresh)
   const contacts = useFetch('/api/admin/contacts', token, refresh)
+
+  useEffect(() => {
+    let aborted = false
+    async function loadVisits() {
+      if (!token) return
+      setVisitsLoading(true)
+      try {
+        const res = await fetchAdminVisits()
+        if (!aborted) {
+          setVisitStats({
+            totalVisits: res.data?.totalVisits ?? 0,
+            uniqueVisitors: res.data?.uniqueVisitors ?? 0,
+          })
+        }
+      } catch {
+        if (!aborted) setVisitStats({ totalVisits: 0, uniqueVisitors: 0 })
+      } finally {
+        if (!aborted) setVisitsLoading(false)
+      }
+    }
+    loadVisits()
+    return () => {
+      aborted = true
+    }
+  }, [token, refresh])
 
   useEffect(() => {
     let aborted = false
@@ -535,8 +570,10 @@ export default function Admin() {
         user={user}
         stats={stats}
         contactCount={contactCount}
+        visitStats={visitStats}
         loading={regs.loading}
         contactsLoading={contacts.loading}
+        visitsLoading={visitsLoading}
       />
 
       <AdminUsersSection

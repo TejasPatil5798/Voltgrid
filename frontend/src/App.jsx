@@ -15,6 +15,7 @@ import Admin from './pages/Admin'
 import Tutor from './pages/Tutor'
 import Learner from './pages/Learner'
 import { ROLES } from './lib/auth'
+import { trackSiteVisit } from './lib/visitTracker'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -28,6 +29,10 @@ function ScrollToTop() {
 
 export default function App() {
   const location = useLocation()
+
+  React.useEffect(() => {
+    trackSiteVisit()
+  }, [])
 
   return (
     <div className="app">

@@ -26,6 +26,10 @@ export function fetchAdminUsers(role) {
   return adminFetch('/api/admin/users' + q)
 }
 
+export function fetchAdminVisits() {
+  return adminFetch('/api/admin/visits')
+}
+
 export function createAdminUser(body) {
   return adminFetch('/api/admin/users', { method: 'POST', body: JSON.stringify(body) })
 }

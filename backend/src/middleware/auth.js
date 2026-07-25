@@ -17,7 +17,12 @@ async function requireAuth(req, res, next) {
   const token = auth.startsWith('Bearer ') ? auth.slice(7) : auth
   try {
     const payload = jwt.verify(token, JWT_SECRET)
-    req.user = payload
+    req.user = {
+      id: payload.id,
+      email: payload.email,
+      name: payload.name,
+      role: resolveRole(payload),
+    }
     next()
   } catch (err) {
     return res.status(401).json({ error: 'Invalid token' })
@@ -26,10 +31,18 @@ async function requireAuth(req, res, next) {
 
 async function loadUserFromToken(req, res, next) {
   try {
-    await requireAuth(req, res, async () => {})
-    const id = req.user && req.user.id
+    const auth = req.headers.authorization || req.headers['x-access-token']
+    if (!auth) return res.status(401).json({ error: 'No token provided' })
+    const token = auth.startsWith('Bearer ') ? auth.slice(7) : auth
+    let payload
+    try {
+      payload = jwt.verify(token, JWT_SECRET)
+    } catch {
+      return res.status(401).json({ error: 'Invalid token' })
+    }
+    const id = payload && payload.id
     if (!id) return res.status(401).json({ error: 'Invalid token payload' })
-    const u = await User.findById(id).lean()
+    const u = await User.findById(id).select('_id email name role isAdmin').lean()
     if (!u) return res.status(401).json({ error: 'User not found' })
     const role = resolveRole(u)
     req.user = { id: u._id.toString(), email: u.email, name: u.name, role }
@@ -42,7 +55,8 @@ async function loadUserFromToken(req, res, next) {
 
 function requireRole(...allowedRoles) {
   return (req, res, next) => {
-    loadUserFromToken(req, res, () => {
+    // Trust JWT payload for role checks — avoids a Mongo round-trip on every API call
+    requireAuth(req, res, () => {
       if (!req.user?.role || !allowedRoles.includes(req.user.role)) {
         const isLearner = req.user?.role === 'learner'
         const tutorOnly = allowedRoles.includes('tutor') && !allowedRoles.includes('learner')
